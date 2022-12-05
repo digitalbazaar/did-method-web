@@ -56,25 +56,25 @@ That DID would correspond to the following Document:
   ],
   "id": "did:web:w3c-ccg.github.io:user:alice",
   "verificationMethod": [{
-    "id": "did:key:z6MkhaXgBZDvotDkL5257faiztiGiC2QtKLGpbnnEGta2doK#z6MkhaXgBZDvotDkL5257faiztiGiC2QtKLGpbnnEGta2doK",
+    "id": "did:web:w3c-ccg.github.io:user:alice#z6MkhaXgBZDvotDkL5257faiztiGiC2QtKLGpbnnEGta2doK",
     "type": "Ed25519VerificationKey2020",
     "controller": "did:web:w3c-ccg.github.io:user:alice",
     "publicKeyMultibase": "z6MkhaXgBZDvotDkL5257faiztiGiC2QtKLGpbnnEGta2doK"
   }],
   "authentication": [
-    "did:key:z6MkhaXgBZDvotDkL5257faiztiGiC2QtKLGpbnnEGta2doK#z6MkhaXgBZDvotDkL5257faiztiGiC2QtKLGpbnnEGta2doK"
+    "did:web:w3c-ccg.github.io:user:alice#z6Mkpw72M9suPCBv48X2Xj4YKZJH9W7wzEK1aS6JioKSo89C"
   ],
   "assertionMethod": [
-    "did:key:z6MkhaXgBZDvotDkL5257faiztiGiC2QtKLGpbnnEGta2doK#z6MkhaXgBZDvotDkL5257faiztiGiC2QtKLGpbnnEGta2doK"
+    "did:web:w3c-ccg.github.io:user:alice#z6Mkpw72M9suPCBv48X2Xj4YKZJH9W7wzEK1aS6JioKSo89C"
   ],
   "capabilityDelegation": [
-    "did:key:z6MkhaXgBZDvotDkL5257faiztiGiC2QtKLGpbnnEGta2doK#z6MkhaXgBZDvotDkL5257faiztiGiC2QtKLGpbnnEGta2doK"
+    "did:web:w3c-ccg.github.io:user:alice#z6Mkpw72M9suPCBv48X2Xj4YKZJH9W7wzEK1aS6JioKSo89C"
   ],
   "capabilityInvocation": [
-    "did:key:z6MkhaXgBZDvotDkL5257faiztiGiC2QtKLGpbnnEGta2doK#z6MkhaXgBZDvotDkL5257faiztiGiC2QtKLGpbnnEGta2doK"
+    "did:web:w3c-ccg.github.io:user:alice#z6Mkpw72M9suPCBv48X2Xj4YKZJH9W7wzEK1aS6JioKSo89C"
   ],
   "keyAgreement": [{
-    "id": "did:key:z6MkhaXgBZDvotDkL5257faiztiGiC2QtKLGpbnnEGta2doK#z6LSj72tK8brWgZja8NLRwPigth2T9QRiG1uH9oKZuKjdh9p",
+    "id": "did:web:w3c-ccg.github.io:user:alice#z6LSj72tK8brWgZja8NLRwPigth2T9QRiG1uH9oKZuKjdh9p",
     "type": "X25519KeyAgreementKey2020",
     "controller": "did:web:w3c-ccg.github.io:user:alice",
     "publicKeyMultibase": "z6LSj72tK8brWgZja8NLRwPigth2T9QRiG1uH9oKZuKjdh9p"
@@ -101,6 +101,62 @@ npm install
 ```
 
 ## Usage
+
+### `generate()`
+
+To generate a new key and get its corresponding `did:web` method DID Document:
+
+```js
+import {driver} from '@digitalbazaar/did-method-web';
+const didWebDriver = driver();
+
+// generate did:web using Ed25519 key type by default
+const {didDocument, keyPairs, methodFor} = await didWebDriver.generate({
+  url: 'did:web:w3c-ccg.github.io:user:alice'
+});
+
+// print the DID Document above
+console.log(JSON.stringify(didDocument, null, 2));
+
+// keyPairs will be set like so ->
+Map(2) {
+  'did:web:w3c-ccg.github.io:user:alice#z6MkuBLrjSGt1PPADAvuv6rmvj4FfSAfffJotC6K8ZEorYmv' => Ed25519VerificationKey2020 {
+    id: 'did:web:w3c-ccg.github.io:user:alice#z6MkuBLrjSGt1PPADAvuv6rmvj4FfSAfffJotC6K8ZEorYmv',
+    controller: 'did:web:w3c-ccg.github.io:user:alice',
+    type: 'Ed25519VerificationKey2020',
+    publicKeyMultibase: 'z6MkuBLrjSGt1PPADAvuv6rmvj4FfSAfffJotC6K8ZEorYmv',
+    privateKeyMultibase: 'z3zDo1wXuXGcFkJa9SPE7VYpdutmHq8gJsvFRMKJckTWMykoHsAjWNbHXqzrZ8qa7aWdDTjmJNJ1amYEG2mCvZZeY'
+  },
+  'did:web:w3c-ccg.github.io:user:alice#z6LSeRSE5Em5oJpwdk3NBaLVERBS332ULC7EQq5EtMsmXhsM' => X25519KeyAgreementKey2020 {
+    id: 'did:web:w3c-ccg.github.io:user:alice#z6LSeRSE5Em5oJpwdk3NBaLVERBS332ULC7EQq5EtMsmXhsM',
+    controller: 'did:web:w3c-ccg.github.io:user:alice',
+    type: 'X25519KeyAgreementKey2020',
+    publicKeyMultibase: 'z6LSeRSE5Em5oJpwdk3NBaLVERBS332ULC7EQq5EtMsmXhsM',
+    privateKeyMultibase: 'z3weeMD56C1T347EmB6kYNS7trpQwjvtQCpCYRpqGz6mcemT'
+  }
+}
+```
+
+`methodFor` is a convenience function that returns a public/private key pair
+instance for a given purpose. For example, a verification key (containing a
+`signer()` and `verifier()` functions) are frequently useful for
+[`jsonld-signatures`](https://github.com/digitalbazaar/jsonld-signatures) or
+[`vc-js`](https://github.com/digitalbazaar/vc-js) operations. After generating
+a new did:web DID, you can do:
+
+```js
+// For signing Verifiable Credentials
+const assertionKeyPair = methodFor({purpose: 'assertionMethod'});
+// For Authorization Capabilities (zCaps)
+const invocationKeyPair = methodFor({purpose: 'capabilityInvocation'});
+// For Encryption using `@digitalbazaar/minimal-cipher`
+const keyAgreementPair = methodFor({purpose: 'keyAgreement'});
+```
+
+Note that `methodFor` returns a key pair that contains both a public and private
+key pair (since it has access to the `keyPairs` map from `generate()`).
+This makes it useful for _signing_ and _encrypting_ operations (unlike the
+`publicMethodFor` that's returned by `get()`, below).
 
 ### `get()`
 
