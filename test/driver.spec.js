@@ -27,38 +27,12 @@ describe('did:web method driver', () => {
   describe('get', () => {
     it('should get the DID Document for a did:web DID', async () => {
       nock(host).get(path).reply(200, EXPECTED_DID_DOC);
-      const keyId = TEST_DID +
-        '#z6MknCCLeeHBUaHu4aHSVLDCYQW9gjVJ7a63FpMvtuVMy53T';
       const didDocument = await didWebDriver.get({did: TEST_DID});
-
-      expect(didDocument.id).to.equal(TEST_DID);
-      expect(didDocument['@context']).to.eql([
-        'https://www.w3.org/ns/did/v1',
-        'https://w3id.org/security/suites/ed25519-2020/v1',
-        'https://w3id.org/security/suites/x25519-2020/v1'
-      ]);
-      expect(didDocument.authentication).to.eql([keyId]);
-      expect(didDocument.assertionMethod).to.eql([keyId]);
-      expect(didDocument.capabilityDelegation).to.eql([keyId]);
-      expect(didDocument.capabilityInvocation).to.eql([keyId]);
-
-      const [publicKey] = didDocument.verificationMethod;
-      expect(publicKey.id).to.equal(keyId);
-      expect(publicKey.type).to.equal('Ed25519VerificationKey2020');
-      expect(publicKey.controller).to.equal(TEST_DID);
-      expect(publicKey.publicKeyMultibase).to
-        .equal('z6MknCCLeeHBUaHu4aHSVLDCYQW9gjVJ7a63FpMvtuVMy53T');
-
-      const [kak] = didDocument.keyAgreement;
-      expect(kak.id).to.equal(TEST_DID +
-        '#z6LSotGbgPCJD2Y6TSvvgxERLTfVZxCh9KSrez3WNrNp7vKW');
-      expect(kak.type).to.equal('X25519KeyAgreementKey2020');
-      expect(kak.controller).to.equal(TEST_DID);
-      expect(kak.publicKeyMultibase).to
-        .equal('z6LSotGbgPCJD2Y6TSvvgxERLTfVZxCh9KSrez3WNrNp7vKW');
+      expect(didDocument).to.eql(EXPECTED_DID_DOC);
     });
 
     it('should get the DID Doc in 2018 mode', async () => {
+      nock(host).get(path).reply(200, EXPECTED_DID_DOC);
       const didWebDriver2018 = driver({
         verificationSuite: Ed25519VerificationKey2018
       });
@@ -127,6 +101,7 @@ describe('did:web method driver', () => {
     });
 
     it('should resolve an individual key in 2018 mode', async () => {
+      nock(host).get(path).reply(200, EXPECTED_DID_DOC);
       const didWebDriver2018 = driver({
         verificationSuite: Ed25519VerificationKey2018
       });
@@ -145,6 +120,7 @@ describe('did:web method driver', () => {
     });
 
     it('should resolve an individual key agreement key', async () => {
+      nock(host).get(path).reply(200, EXPECTED_DID_DOC);
       const kakKeyId =
         `${TEST_DID}#z6LSotGbgPCJD2Y6TSvvgxERLTfVZxCh9KSrez3WNrNp7vKW`;
       const key = await didWebDriver.get({did: kakKeyId});
@@ -160,6 +136,7 @@ describe('did:web method driver', () => {
     });
 
     it('should resolve an individual key agreement key (2018)', async () => {
+      nock(host).get(path).reply(200, EXPECTED_DID_DOC);
       const didWebDriver2018 = driver({
         verificationSuite: Ed25519VerificationKey2018
       });
@@ -220,6 +197,7 @@ describe('did:web method driver', () => {
   describe('publicMethodFor', () => {
     it('should find a key for a did doc and purpose', async () => {
       const did = TEST_DID;
+      nock(host).get(path).reply(200, EXPECTED_DID_DOC);
       // First, get the did document
       const didDocument = await didWebDriver.get({did});
       // Then publicMethodFor can be used to fetch key data
