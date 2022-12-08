@@ -22,11 +22,11 @@ const TEST_URL = `${host}${path}`;
 // TODO
 //import EXPECTED_DID_DOC from './expected-did-doc.json' assert {type: 'json'};
 import {expectedDidDoc as EXPECTED_DID_DOC} from './expected-data.js';
-nock(host).get(path).reply(200, EXPECTED_DID_DOC);
 
 describe('did:web method driver', () => {
   describe('get', () => {
     it('should get the DID Document for a did:web DID', async () => {
+      nock(host).get(path).reply(200, EXPECTED_DID_DOC);
       const keyId = TEST_DID +
         '#z6MknCCLeeHBUaHu4aHSVLDCYQW9gjVJ7a63FpMvtuVMy53T';
       const didDocument = await didWebDriver.get({did: TEST_DID});
@@ -113,6 +113,7 @@ describe('did:web method driver', () => {
     it('should resolve an individual key within the DID Doc', async () => {
       const keyId = TEST_DID +
         '#z6MknCCLeeHBUaHu4aHSVLDCYQW9gjVJ7a63FpMvtuVMy53T';
+      nock(host).get(path).reply(200, EXPECTED_DID_DOC);
       const key = await didWebDriver.get({did: keyId});
 
       expect(key).to.eql({
@@ -183,7 +184,7 @@ describe('did:web method driver', () => {
         didDocument, keyPairs, methodFor
       } = await didWebDriver.generate({url: TEST_URL});
       const did = didDocument.id;
-      expect(did).to.exist();
+      expect(did).to.exist;
       expect(did).to.equal(TEST_DID);
       const keyId = didDocument.authentication[0];
 
@@ -195,6 +196,7 @@ describe('did:web method driver', () => {
 
       expect(keyPairs.get(keyId).controller).to.equal(did);
       expect(keyPairs.get(keyId).id).to.equal(keyId);
+      nock(host).get(path).reply(200, didDocument);
 
       const fetchedDidDoc = await didWebDriver.get({did});
       expect(fetchedDidDoc).to.eql(didDocument);
@@ -241,7 +243,8 @@ describe('did:web method driver', () => {
     });
 
     it('should throw error if key is not found for purpose', async () => {
-      const did = 'did:web:z6MknCCLeeHBUaHu4aHSVLDCYQW9gjVJ7a63FpMvtuVMy53T';
+      const did = TEST_DID;
+      nock(host).get(path).reply(200, EXPECTED_DID_DOC);
       // First, get the did document
       const didDocument = await didWebDriver.get({did});
 
