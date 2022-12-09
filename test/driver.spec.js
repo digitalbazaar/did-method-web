@@ -86,17 +86,13 @@ describe('did:web method driver', () => {
 
     it('should resolve an individual key within the DID Doc', async () => {
       const keyId = TEST_DID +
-        '#z6MknCCLeeHBUaHu4aHSVLDCYQW9gjVJ7a63FpMvtuVMy53T';
+        '#z6LSgxJr5q1pwHPbiK7u8Pw1GvnfMTZSMxkhaorQ1aJYWFz3';
       nock(host).get(path).reply(200, EXPECTED_DID_DOC);
       const key = await didWebDriver.get({did: keyId});
-
+      const [expectedKaK] = EXPECTED_DID_DOC.keyAgreement;
       expect(key).to.eql({
-        '@context': 'https://w3id.org/security/suites/ed25519-2020/v1',
-        id: 'did:web:z6MknCCLeeHBUaHu4aHSVLDCYQW9gjVJ7a63FpMvtuVMy53T' +
-          '#z6MknCCLeeHBUaHu4aHSVLDCYQW9gjVJ7a63FpMvtuVMy53T',
-        type: 'Ed25519VerificationKey2020',
-        controller: 'did:web:z6MknCCLeeHBUaHu4aHSVLDCYQW9gjVJ7a63FpMvtuVMy53T',
-        publicKeyMultibase: 'z6MknCCLeeHBUaHu4aHSVLDCYQW9gjVJ7a63FpMvtuVMy53T'
+        '@context': 'https://w3id.org/security/suites/x25519-2020/v1',
+        ...expectedKaK
       });
     });
 
