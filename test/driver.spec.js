@@ -204,20 +204,14 @@ describe('did:web method driver', () => {
       const keyAgreementData = didWebDriver.publicMethodFor({
         didDocument, purpose: 'keyAgreement'
       });
-      expect(keyAgreementData).to.have
-        .property('type', 'X25519KeyAgreementKey2020');
-      expect(keyAgreementData).to.have
-        .property('publicKeyMultibase',
-          'z6LSotGbgPCJD2Y6TSvvgxERLTfVZxCh9KSrez3WNrNp7vKW');
+      const [expectedKaK] = EXPECTED_DID_DOC.keyAgreement;
+      expect(keyAgreementData).to.eql(expectedKaK);
 
       const authKeyData = didWebDriver.publicMethodFor({
         didDocument, purpose: 'authentication'
       });
-      expect(authKeyData).to.have
-        .property('type', 'Ed25519VerificationKey2020');
-      expect(authKeyData).to.have
-        .property('publicKeyMultibase',
-          'z6MknCCLeeHBUaHu4aHSVLDCYQW9gjVJ7a63FpMvtuVMy53T');
+      const [expectedVerificationKey] = EXPECTED_DID_DOC.verificationMethod;
+      expect(authKeyData).to.eql(expectedVerificationKey);
     });
 
     it('should throw error if key is not found for purpose', async () => {
