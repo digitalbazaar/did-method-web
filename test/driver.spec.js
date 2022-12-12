@@ -21,7 +21,10 @@ const TEST_URL = `${host}${path}`;
 
 // TODO
 //import EXPECTED_DID_DOC from './expected-did-doc.json' assert {type: 'json'};
-import {expectedDidDoc as EXPECTED_DID_DOC} from './expected-data.js';
+import {
+  expectedDidDoc as EXPECTED_DID_DOC,
+  expectedDidDoc2018
+} from './expected-data.js';
 
 describe('did:web method driver', () => {
   describe('get', () => {
@@ -32,56 +35,12 @@ describe('did:web method driver', () => {
     });
 
     it('should get the DID Doc in 2018 mode', async () => {
-      nock(host).get(path).reply(200, EXPECTED_DID_DOC);
+      nock(host).get(path).reply(200, expectedDidDoc2018);
       const didWebDriver2018 = driver({
         verificationSuite: Ed25519VerificationKey2018
       });
       const didDocument = await didWebDriver2018.get({did: TEST_DID});
-
-      const expectedDidDoc = {
-        '@context': [
-          'https://www.w3.org/ns/did/v1',
-          'https://w3id.org/security/suites/ed25519-2018/v1',
-          'https://w3id.org/security/suites/x25519-2019/v1'
-        ],
-        id: TEST_DID,
-        verificationMethod: [
-          {
-            id: TEST_DID +
-              '#z6MkpTHR8VNsBxYAAWHut2Geadd9jSwuBV8xRoAnwWsdvktH',
-            type: 'Ed25519VerificationKey2018',
-            controller: TEST_DID,
-            publicKeyBase58: 'B12NYF8RrR3h41TDCTJojY59usg3mbtbjnFs7Eud1Y6u'
-          }
-        ],
-        authentication: [
-          TEST_DID +
-          '#z6MkpTHR8VNsBxYAAWHut2Geadd9jSwuBV8xRoAnwWsdvktH'
-        ],
-        assertionMethod: [
-          TEST_DID +
-            '#z6MkpTHR8VNsBxYAAWHut2Geadd9jSwuBV8xRoAnwWsdvktH'
-        ],
-        capabilityDelegation: [
-          TEST_DID +
-            '#z6MkpTHR8VNsBxYAAWHut2Geadd9jSwuBV8xRoAnwWsdvktH'
-        ],
-        capabilityInvocation: [
-          TEST_DID +
-            '#z6MkpTHR8VNsBxYAAWHut2Geadd9jSwuBV8xRoAnwWsdvktH'
-        ],
-        keyAgreement: [
-          {
-            id: TEST_DID +
-              '#z6LSbysY2xFMRpGMhb7tFTLMpeuPRaqaWM1yECx2AtzE3KCc',
-            type: 'X25519KeyAgreementKey2019',
-            controller: TEST_DID,
-            publicKeyBase58: 'JhNWeSVLMYccCk7iopQW4guaSJTojqpMEELgSLhKwRr'
-          }
-        ]
-      };
-
-      expect(didDocument).to.eql(expectedDidDoc);
+      expect(didDocument).to.eql(expectedDidDoc2018);
     });
 
     it('should resolve an individual key within the DID Doc', async () => {
@@ -97,20 +56,15 @@ describe('did:web method driver', () => {
     });
 
     it('should resolve an individual key in 2018 mode', async () => {
-      nock(host).get(path).reply(200, EXPECTED_DID_DOC);
+      nock(host).get(path).reply(200, expectedDidDoc2018);
+      const [vm] = expectedDidDoc2018.verificationMethod;
       const didWebDriver2018 = driver({
         verificationSuite: Ed25519VerificationKey2018
       });
-      const keyId =
-        `${TEST_DID}#z6Mkpw72M9suPCBv48X2Xj4YKZJH9W7wzEK1aS6JioKSo89C`;
-      const key = await didWebDriver2018.get({did: keyId});
-
+      const key = await didWebDriver2018.get({did: vm.id});
       expect(key).to.eql({
+        ...vm,
         '@context': 'https://w3id.org/security/suites/ed25519-2018/v1',
-        id: keyId,
-        type: 'Ed25519VerificationKey2018',
-        controller: 'did:web:z6MkpTHR8VNsBxYAAWHut2Geadd9jSwuBV8xRoAnwWsdvktH',
-        publicKeyBase58: 'B12NYF8RrR3h41TDCTJojY59usg3mbtbjnFs7Eud1Y6u'
       });
     });
 
@@ -127,19 +81,17 @@ describe('did:web method driver', () => {
     });
 
     it('should resolve an individual key agreement key (2018)', async () => {
-      nock(host).get(path).reply(200, EXPECTED_DID_DOC);
+      nock(host).get(path).reply(200, expectedDidDoc2018);
       const didWebDriver2018 = driver({
         verificationSuite: Ed25519VerificationKey2018
       });
       const kakKeyId =
         `${TEST_DID}#z6LSgxJr5q1pwHPbiK7u8Pw1GvnfMTZSMxkhaorQ1aJYWFz3`;
       const key = await didWebDriver2018.get({did: kakKeyId});
-      const [expectedKak] = EXPECTED_DID_DOC.keyAgreement;
+      const [expectedKak] = expectedDidDoc2018.keyAgreement;
       expect(key).to.eql({
         ...expectedKak,
-        type: 'X25519KeyAgreementKey2019',
         '@context': 'https://w3id.org/security/suites/x25519-2020/v1',
-        publicKeyBase58: expectedKak.publicKeyMultibase
       });
     });
   });
