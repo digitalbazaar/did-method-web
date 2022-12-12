@@ -82,16 +82,14 @@ describe('did:web method driver', () => {
 
     it('should resolve an individual key agreement key (2018)', async () => {
       nock(host).get(path).reply(200, expectedDidDoc2018);
+      const [expectedKak] = expectedDidDoc2018.keyAgreement;
       const didWebDriver2018 = driver({
         verificationSuite: Ed25519VerificationKey2018
       });
-      const kakKeyId =
-        `${TEST_DID}#z6LSgxJr5q1pwHPbiK7u8Pw1GvnfMTZSMxkhaorQ1aJYWFz3`;
-      const key = await didWebDriver2018.get({did: kakKeyId});
-      const [expectedKak] = expectedDidDoc2018.keyAgreement;
-      expect(key).to.eql({
+      const key = await didWebDriver2018.get({did: expectedKak.id});
+       expect(key).to.eql({
         ...expectedKak,
-        '@context': 'https://w3id.org/security/suites/x25519-2020/v1',
+        '@context': 'https://w3id.org/security/suites/x25519-2019/v1',
       });
     });
   });
