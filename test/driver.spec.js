@@ -87,7 +87,7 @@ describe('did:web method driver', () => {
         verificationSuite: Ed25519VerificationKey2018
       });
       const key = await didWebDriver2018.get({did: expectedKak.id});
-       expect(key).to.eql({
+      expect(key).to.eql({
         ...expectedKak,
         '@context': 'https://w3id.org/security/suites/x25519-2019/v1',
       });
