@@ -32,6 +32,7 @@ describe('urlToDid', function() {
     expect(result).to.not.exist;
     expect(error).to.exist;
     expect(error).to.be.an.instanceOf(TypeError);
+    expect(error.message).to.include(
+      '"url" protocol must by "https:" received http:');
   });
-
 });

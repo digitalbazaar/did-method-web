@@ -32,6 +32,7 @@ describe('didToUrl', function() {
     expect(result).to.not.exist;
     expect(error).to.exist;
     expect(error).to.be.an.instanceOf(Error);
+    expect(error.message).to.include('Scheme must be "did" received urn');
   });
   it('should throw if did method is not "web"', function() {
     let result;
@@ -44,5 +45,6 @@ describe('didToUrl', function() {
     expect(result).to.not.exist;
     expect(error).to.exist;
     expect(error).to.be.an.instanceOf(Error);
+    expect(error.message).to.include('Did method must be "web" received key');
   });
 });
