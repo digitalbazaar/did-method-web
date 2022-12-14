@@ -8,8 +8,6 @@ const {expect} = chai;
 
 import {didToUrl} from '../lib/index.js';
 
-const WELL_KNOWN_PATH = '/.well-known/did.json';
-
 describe('didToUrl', function() {
   it('should throw if did is missing', function() {
     let result;
