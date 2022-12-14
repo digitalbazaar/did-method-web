@@ -19,7 +19,6 @@ const host = 'https://w3c-ccg.github.io';
 const path = '/user/alice';
 const FILE_PATH = `${path}/did.json`;
 const TEST_URL = `${host}${path}`;
-const WELL_KNOWN_PATH = '/.well-known/did.json';
 
 // TODO
 //import EXPECTED_DID_DOC from './expected-did-doc.json' assert {type: 'json'};
