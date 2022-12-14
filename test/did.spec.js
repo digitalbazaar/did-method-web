@@ -55,7 +55,6 @@ describe('didToUrl', function() {
     } catch(e) {
       error = e;
     }
-    console.log({result, error});
     expect(result).to.not.exist;
     expect(error).to.exist;
     expect(error).to.be.an.instanceOf(Error);

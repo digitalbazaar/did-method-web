@@ -183,4 +183,19 @@ describe('urlToDid', function() {
     expect(result).to.equal(
       'did:web:www.bar.org%3A46443:foo');
   });
+  it('should drop "/did.json" path', function() {
+    let result;
+    let error;
+    try {
+      result = urlToDid(
+        'https://www.bar.org:46443/foo/did.json');
+    } catch(e) {
+      error = e;
+    }
+    expect(error).to.not.exist;
+    expect(result).to.exist;
+    expect(result).to.be.a.string;
+    expect(result).to.equal(
+      'did:web:www.bar.org%3A46443:foo');
+  });
 });
