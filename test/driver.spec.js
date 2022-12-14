@@ -47,9 +47,12 @@ describe('did:web method driver', () => {
     });
 
     it('should resolve an individual key within the DID Doc', async () => {
-      const keyId = TEST_DID +
-        '#z6LSgxJr5q1pwHPbiK7u8Pw1GvnfMTZSMxkhaorQ1aJYWFz3';
-      const stub = stubRequest({url: FILE_URL, data: EXPECTED_DID_DOC});
+      const fragment = '#z6LSgxJr5q1pwHPbiK7u8Pw1GvnfMTZSMxkhaorQ1aJYWFz3';
+      const keyId = TEST_DID + fragment;
+      const stub = stubRequest({
+        url: FILE_URL + fragment,
+        data: EXPECTED_DID_DOC
+      });
       const key = await didWebDriver.get({did: keyId});
       const [expectedKaK] = EXPECTED_DID_DOC.keyAgreement;
       expect(key).to.eql({
@@ -60,8 +63,12 @@ describe('did:web method driver', () => {
     });
 
     it('should resolve an individual key in 2018 mode', async () => {
-      const stub = stubRequest({url: FILE_URL, data: expectedDidDoc2018});
       const [vm] = expectedDidDoc2018.verificationMethod;
+      const fragment = vm.id.split('#');
+      const stub = stubRequest({
+        url: FILE_URL + '#' + fragment[1],
+        data: expectedDidDoc2018
+      });
       const didWebDriver2018 = driver({
         verificationSuite: Ed25519VerificationKey2018
       });
@@ -74,9 +81,12 @@ describe('did:web method driver', () => {
     });
 
     it('should resolve an individual key agreement key', async () => {
-      const stub = stubRequest({url: FILE_URL, data: EXPECTED_DID_DOC});
-      const kakKeyId =
-        `${TEST_DID}#z6LSgxJr5q1pwHPbiK7u8Pw1GvnfMTZSMxkhaorQ1aJYWFz3`;
+      const fragment = '#z6LSgxJr5q1pwHPbiK7u8Pw1GvnfMTZSMxkhaorQ1aJYWFz3';
+      const stub = stubRequest({
+        url: FILE_URL + fragment,
+        data: EXPECTED_DID_DOC
+      });
+      const kakKeyId = `${TEST_DID}${fragment}`;
       const key = await didWebDriver.get({did: kakKeyId});
       const [expectedKak] = EXPECTED_DID_DOC.keyAgreement;
       expect(key).to.eql({
@@ -87,8 +97,12 @@ describe('did:web method driver', () => {
     });
 
     it('should resolve an individual key agreement key (2018)', async () => {
-      const stub = stubRequest({url: FILE_URL, data: expectedDidDoc2018});
       const [expectedKak] = expectedDidDoc2018.keyAgreement;
+      const fragment = expectedKak.id.split('#');
+      const stub = stubRequest({
+        url: FILE_URL + '#' + fragment[1],
+        data: expectedDidDoc2018
+      });
       const didWebDriver2018 = driver({
         verificationSuite: Ed25519VerificationKey2018
       });

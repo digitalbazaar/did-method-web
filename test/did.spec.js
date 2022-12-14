@@ -72,7 +72,7 @@ describe('didToUrl', function() {
     expect(error).to.not.exist;
     expect(result).to.exist;
     expect(result).to.be.an('object');
-    expect(result.baseUrl).to.equal('https://bar.com/.well-known/did.json');
+    expect(result.fullUrl).to.equal('https://bar.com/.well-known/did.json');
   });
   it('should add path "/did.json" if paths on did', function() {
     let result;
@@ -85,7 +85,60 @@ describe('didToUrl', function() {
     expect(error).to.not.exist;
     expect(result).to.exist;
     expect(result).to.be.an('object');
-    expect(result.baseUrl).to.equal('https://bar.com/path/did.json');
+    expect(result.fullUrl).to.equal('https://bar.com/path/did.json');
   });
-
+  it('should decode port if included in did', function() {
+    let result;
+    let error;
+    try {
+      result = didToUrl('did:web:bar.com%3A46443:path');
+    } catch(e) {
+      error = e;
+    }
+    expect(error).to.not.exist;
+    expect(result).to.exist;
+    expect(result).to.be.an('object');
+    expect(result.fullUrl).to.equal('https://bar.com:46443/path/did.json');
+  });
+  it('should include fragments from the did', function() {
+    let result;
+    let error;
+    try {
+      result = didToUrl('did:web:bar.com%3A46443:path#zFoo');
+    } catch(e) {
+      error = e;
+    }
+    expect(error).to.not.exist;
+    expect(result).to.exist;
+    expect(result).to.be.an('object');
+    expect(result.fullUrl).to.equal('https://bar.com:46443/path/did.json#zFoo');
+  });
+  it('should include queries from the did', function() {
+    let result;
+    let error;
+    try {
+      result = didToUrl('did:web:bar.com%3A46443:path?service=bar');
+    } catch(e) {
+      error = e;
+    }
+    expect(error).to.not.exist;
+    expect(result).to.exist;
+    expect(result).to.be.an('object');
+    expect(result.fullUrl).to.equal(
+      'https://bar.com:46443/path/did.json?service=bar');
+  });
+  it('should include queries & fragments from the did', function() {
+    let result;
+    let error;
+    try {
+      result = didToUrl('did:web:bar.com%3A46443:path?service=bar#zFoo');
+    } catch(e) {
+      error = e;
+    }
+    expect(error).to.not.exist;
+    expect(result).to.exist;
+    expect(result).to.be.an('object');
+    expect(result.fullUrl).to.equal(
+      'https://bar.com:46443/path/did.json?service=bar#zFoo');
+  });
 });
