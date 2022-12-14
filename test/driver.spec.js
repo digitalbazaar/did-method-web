@@ -17,7 +17,9 @@ const TEST_SEED = '8c2114a150a16209c653817acc7f3e7e9c6c6290ae93d6689cbd61bb038cd
 const TEST_DID = 'did:web:w3c-ccg.github.io:user:alice';
 const host = 'https://w3c-ccg.github.io';
 const path = '/user/alice';
+const FILE_PATH = `${path}/did.json`;
 const TEST_URL = `${host}${path}`;
+const WELL_KNOWN_PATH = '/.well-known/did.json';
 
 // TODO
 //import EXPECTED_DID_DOC from './expected-did-doc.json' assert {type: 'json'};
@@ -29,13 +31,13 @@ import {
 describe('did:web method driver', () => {
   describe('get', () => {
     it('should get the DID Document for a did:web DID', async () => {
-      nock(host).get(path).reply(200, EXPECTED_DID_DOC);
+      nock(host).get(FILE_PATH).reply(200, EXPECTED_DID_DOC);
       const didDocument = await didWebDriver.get({did: TEST_DID});
       expect(didDocument).to.eql(EXPECTED_DID_DOC);
     });
 
     it('should get the DID Doc in 2018 mode', async () => {
-      nock(host).get(path).reply(200, expectedDidDoc2018);
+      nock(host).get(FILE_PATH).reply(200, expectedDidDoc2018);
       const didWebDriver2018 = driver({
         verificationSuite: Ed25519VerificationKey2018
       });
@@ -46,7 +48,7 @@ describe('did:web method driver', () => {
     it('should resolve an individual key within the DID Doc', async () => {
       const keyId = TEST_DID +
         '#z6LSgxJr5q1pwHPbiK7u8Pw1GvnfMTZSMxkhaorQ1aJYWFz3';
-      nock(host).get(path).reply(200, EXPECTED_DID_DOC);
+      nock(host).get(FILE_PATH).reply(200, EXPECTED_DID_DOC);
       const key = await didWebDriver.get({did: keyId});
       const [expectedKaK] = EXPECTED_DID_DOC.keyAgreement;
       expect(key).to.eql({
@@ -56,7 +58,7 @@ describe('did:web method driver', () => {
     });
 
     it('should resolve an individual key in 2018 mode', async () => {
-      nock(host).get(path).reply(200, expectedDidDoc2018);
+      nock(host).get(FILE_PATH).reply(200, expectedDidDoc2018);
       const [vm] = expectedDidDoc2018.verificationMethod;
       const didWebDriver2018 = driver({
         verificationSuite: Ed25519VerificationKey2018
@@ -69,7 +71,7 @@ describe('did:web method driver', () => {
     });
 
     it('should resolve an individual key agreement key', async () => {
-      nock(host).get(path).reply(200, EXPECTED_DID_DOC);
+      nock(host).get(FILE_PATH).reply(200, EXPECTED_DID_DOC);
       const kakKeyId =
         `${TEST_DID}#z6LSgxJr5q1pwHPbiK7u8Pw1GvnfMTZSMxkhaorQ1aJYWFz3`;
       const key = await didWebDriver.get({did: kakKeyId});
@@ -81,7 +83,7 @@ describe('did:web method driver', () => {
     });
 
     it('should resolve an individual key agreement key (2018)', async () => {
-      nock(host).get(path).reply(200, expectedDidDoc2018);
+      nock(host).get(FILE_PATH).reply(200, expectedDidDoc2018);
       const [expectedKak] = expectedDidDoc2018.keyAgreement;
       const didWebDriver2018 = driver({
         verificationSuite: Ed25519VerificationKey2018
@@ -112,7 +114,7 @@ describe('did:web method driver', () => {
 
       expect(keyPairs.get(keyId).controller).to.equal(did);
       expect(keyPairs.get(keyId).id).to.equal(keyId);
-      nock(host).get(path).reply(200, didDocument);
+      nock(host).get(FILE_PATH).reply(200, didDocument);
 
       const fetchedDidDoc = await didWebDriver.get({did});
       expect(fetchedDidDoc).to.eql(didDocument);
@@ -136,7 +138,7 @@ describe('did:web method driver', () => {
   describe('publicMethodFor', () => {
     it('should find a key for a did doc and purpose', async () => {
       const did = TEST_DID;
-      nock(host).get(path).reply(200, EXPECTED_DID_DOC);
+      nock(host).get(FILE_PATH).reply(200, EXPECTED_DID_DOC);
       // First, get the did document
       const didDocument = await didWebDriver.get({did});
       // Then publicMethodFor can be used to fetch key data
@@ -155,7 +157,7 @@ describe('did:web method driver', () => {
 
     it('should throw error if key is not found for purpose', async () => {
       const did = TEST_DID;
-      nock(host).get(path).reply(200, EXPECTED_DID_DOC);
+      nock(host).get(FILE_PATH).reply(200, EXPECTED_DID_DOC);
       // First, get the did document
       const didDocument = await didWebDriver.get({did});
 
