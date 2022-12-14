@@ -8,7 +8,7 @@ const {expect} = chai;
 import {driver} from '../lib/index.js';
 import {Ed25519VerificationKey2018} from
   '@digitalbazaar/ed25519-verification-key-2018';
-import nock from 'nock';
+import {stubRequest} from './helpers.js';
 
 const didWebDriver = driver();
 
@@ -17,8 +17,8 @@ const TEST_SEED = '8c2114a150a16209c653817acc7f3e7e9c6c6290ae93d6689cbd61bb038cd
 const TEST_DID = 'did:web:w3c-ccg.github.io:user:alice';
 const host = 'https://w3c-ccg.github.io';
 const path = '/user/alice';
-const FILE_PATH = `${path}/did.json`;
 const TEST_URL = `${host}${path}`;
+const FILE_URL = `${TEST_URL}/did.json`;
 
 // TODO
 //import EXPECTED_DID_DOC from './expected-did-doc.json' assert {type: 'json'};
@@ -30,34 +30,37 @@ import {
 describe('did:web method driver', () => {
   describe('get', () => {
     it('should get the DID Document for a did:web DID', async () => {
-      nock(host).get(FILE_PATH).reply(200, EXPECTED_DID_DOC);
+      const stub = stubRequest({url: FILE_URL, data: EXPECTED_DID_DOC});
       const didDocument = await didWebDriver.get({did: TEST_DID});
       expect(didDocument).to.eql(EXPECTED_DID_DOC);
+      stub.restore();
     });
 
     it('should get the DID Doc in 2018 mode', async () => {
-      nock(host).get(FILE_PATH).reply(200, expectedDidDoc2018);
+      const stub = stubRequest({url: FILE_URL, data: expectedDidDoc2018});
       const didWebDriver2018 = driver({
         verificationSuite: Ed25519VerificationKey2018
       });
       const didDocument = await didWebDriver2018.get({did: TEST_DID});
       expect(didDocument).to.eql(expectedDidDoc2018);
+      stub.restore();
     });
 
     it('should resolve an individual key within the DID Doc', async () => {
       const keyId = TEST_DID +
         '#z6LSgxJr5q1pwHPbiK7u8Pw1GvnfMTZSMxkhaorQ1aJYWFz3';
-      nock(host).get(FILE_PATH).reply(200, EXPECTED_DID_DOC);
+      const stub = stubRequest({url: FILE_URL, data: EXPECTED_DID_DOC});
       const key = await didWebDriver.get({did: keyId});
       const [expectedKaK] = EXPECTED_DID_DOC.keyAgreement;
       expect(key).to.eql({
         '@context': 'https://w3id.org/security/suites/x25519-2020/v1',
         ...expectedKaK
       });
+      stub.restore();
     });
 
     it('should resolve an individual key in 2018 mode', async () => {
-      nock(host).get(FILE_PATH).reply(200, expectedDidDoc2018);
+      const stub = stubRequest({url: FILE_URL, data: expectedDidDoc2018});
       const [vm] = expectedDidDoc2018.verificationMethod;
       const didWebDriver2018 = driver({
         verificationSuite: Ed25519VerificationKey2018
@@ -67,10 +70,11 @@ describe('did:web method driver', () => {
         ...vm,
         '@context': 'https://w3id.org/security/suites/ed25519-2018/v1',
       });
+      stub.restore();
     });
 
     it('should resolve an individual key agreement key', async () => {
-      nock(host).get(FILE_PATH).reply(200, EXPECTED_DID_DOC);
+      const stub = stubRequest({url: FILE_URL, data: EXPECTED_DID_DOC});
       const kakKeyId =
         `${TEST_DID}#z6LSgxJr5q1pwHPbiK7u8Pw1GvnfMTZSMxkhaorQ1aJYWFz3`;
       const key = await didWebDriver.get({did: kakKeyId});
@@ -79,10 +83,11 @@ describe('did:web method driver', () => {
         '@context': 'https://w3id.org/security/suites/x25519-2020/v1',
         ...expectedKak
       });
+      stub.restore();
     });
 
     it('should resolve an individual key agreement key (2018)', async () => {
-      nock(host).get(FILE_PATH).reply(200, expectedDidDoc2018);
+      const stub = stubRequest({url: FILE_URL, data: expectedDidDoc2018});
       const [expectedKak] = expectedDidDoc2018.keyAgreement;
       const didWebDriver2018 = driver({
         verificationSuite: Ed25519VerificationKey2018
@@ -92,7 +97,51 @@ describe('did:web method driver', () => {
         ...expectedKak,
         '@context': 'https://w3id.org/security/suites/x25519-2019/v1',
       });
+      stub.restore();
     });
+    describe('publicMethodFor', () => {
+      it('should find a key for a did doc and purpose', async () => {
+        const did = TEST_DID;
+        const stub = stubRequest({url: FILE_URL, data: EXPECTED_DID_DOC});
+        // First, get the did document
+        const didDocument = await didWebDriver.get({did});
+        // Then publicMethodFor can be used to fetch key data
+        const keyAgreementData = didWebDriver.publicMethodFor({
+          didDocument, purpose: 'keyAgreement'
+        });
+        const [expectedKaK] = EXPECTED_DID_DOC.keyAgreement;
+        expect(keyAgreementData).to.eql(expectedKaK);
+
+        const authKeyData = didWebDriver.publicMethodFor({
+          didDocument, purpose: 'authentication'
+        });
+        const [expectedVerificationKey] = EXPECTED_DID_DOC.verificationMethod;
+        expect(authKeyData).to.eql(expectedVerificationKey);
+        stub.restore();
+      });
+
+      it('should throw error if key is not found for purpose', async () => {
+        const did = TEST_DID;
+        const stub = stubRequest({url: FILE_URL, data: EXPECTED_DID_DOC});
+        // First, get the did document
+        const didDocument = await didWebDriver.get({did});
+
+        let error;
+        try {
+          didWebDriver.publicMethodFor({
+            didDocument, purpose: 'invalidPurpose'
+          });
+        } catch(e) {
+          error = e;
+        }
+
+        expect(error).to.exist;
+        expect(error.message).to
+          .contain('No verification method found for purpose');
+        stub.restore();
+      });
+    });
+
   });
 
   describe('generate', () => {
@@ -113,7 +162,7 @@ describe('did:web method driver', () => {
 
       expect(keyPairs.get(keyId).controller).to.equal(did);
       expect(keyPairs.get(keyId).id).to.equal(keyId);
-      nock(host).get(FILE_PATH).reply(200, didDocument);
+      stubRequest({url: FILE_URL, data: didDocument});
 
       const fetchedDidDoc = await didWebDriver.get({did});
       expect(fetchedDidDoc).to.eql(didDocument);
@@ -131,47 +180,6 @@ describe('did:web method driver', () => {
         'verificationMethod'
       ]);
       expect(didDocument).eql(EXPECTED_DID_DOC);
-    });
-  });
-
-  describe('publicMethodFor', () => {
-    it('should find a key for a did doc and purpose', async () => {
-      const did = TEST_DID;
-      nock(host).get(FILE_PATH).reply(200, EXPECTED_DID_DOC);
-      // First, get the did document
-      const didDocument = await didWebDriver.get({did});
-      // Then publicMethodFor can be used to fetch key data
-      const keyAgreementData = didWebDriver.publicMethodFor({
-        didDocument, purpose: 'keyAgreement'
-      });
-      const [expectedKaK] = EXPECTED_DID_DOC.keyAgreement;
-      expect(keyAgreementData).to.eql(expectedKaK);
-
-      const authKeyData = didWebDriver.publicMethodFor({
-        didDocument, purpose: 'authentication'
-      });
-      const [expectedVerificationKey] = EXPECTED_DID_DOC.verificationMethod;
-      expect(authKeyData).to.eql(expectedVerificationKey);
-    });
-
-    it('should throw error if key is not found for purpose', async () => {
-      const did = TEST_DID;
-      nock(host).get(FILE_PATH).reply(200, EXPECTED_DID_DOC);
-      // First, get the did document
-      const didDocument = await didWebDriver.get({did});
-
-      let error;
-      try {
-        didWebDriver.publicMethodFor({
-          didDocument, purpose: 'invalidPurpose'
-        });
-      } catch(e) {
-        error = e;
-      }
-
-      expect(error).to.exist;
-      expect(error.message).to
-        .contain('No verification method found for purpose');
     });
   });
 
