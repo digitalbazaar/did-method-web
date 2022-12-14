@@ -47,6 +47,20 @@ describe('didToUrl', function() {
     expect(error).to.be.an.instanceOf(Error);
     expect(error.message).to.include('Did method must be "web" received key');
   });
+  it('should throw if did contains an unescaped "/"', function() {
+    let result;
+    let error;
+    try {
+      result = didToUrl('did:web:bar.com/path/');
+    } catch(e) {
+      error = e;
+    }
+    console.log({result, error});
+    expect(result).to.not.exist;
+    expect(error).to.exist;
+    expect(error).to.be.an.instanceOf(Error);
+    expect(error.message).to.include('Did method must be "web" received key');
+  });
   it('should add path ".well-known/did.json" if no paths on did', function() {
     let result;
     let error;
@@ -58,7 +72,6 @@ describe('didToUrl', function() {
     expect(error).to.not.exist;
     expect(result).to.exist;
     expect(result).to.be.an('object');
-    console.log(result);
     expect(result.baseUrl).to.equal('https://bar.com/.well-known/did.json');
   });
   it('should add path "/did.json" if paths on did', function() {
@@ -72,7 +85,6 @@ describe('didToUrl', function() {
     expect(error).to.not.exist;
     expect(result).to.exist;
     expect(result).to.be.an('object');
-    console.log(result);
     expect(result.baseUrl).to.equal('https://bar.com/path/did.json');
   });
 
