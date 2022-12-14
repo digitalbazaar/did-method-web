@@ -150,20 +150,23 @@ describe('urlToDid', function() {
     expect(error).to.not.exist;
     expect(result).to.exist;
     expect(result).to.be.a.string;
-    expect(result).to.equal('did:web:www.bar.org%3A46443:foo?service=bar#someKey');
+    expect(result).to.equal(
+      'did:web:www.bar.org%3A46443:foo?service=bar#someKey');
   });
   it('should URI encode paths in did', function() {
     let result;
     let error;
     try {
-      result = urlToDid('https://www.bar.org:46443/foo+srv?service=bar#someKey');
+      result = urlToDid(
+        'https://www.bar.org:46443/foo+srv?service=bar#someKey');
     } catch(e) {
       error = e;
     }
     expect(error).to.not.exist;
     expect(result).to.exist;
     expect(result).to.be.a.string;
-    expect(result).to.equal('did:web:www.bar.org%3A46443:foo%2Bsrv?service=bar#someKey');
+    expect(result).to.equal(
+      'did:web:www.bar.org%3A46443:foo%2Bsrv?service=bar#someKey');
   });
 
 });
