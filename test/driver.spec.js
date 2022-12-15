@@ -28,6 +28,124 @@ import {
 } from './expected-data.js';
 
 describe('did:web method driver', () => {
+  describe('allowList', () => {
+    describe('get', function() {
+      it('should allow any domain if no allowList', async function() {
+        const stub = stubRequest({url: FILE_URL, data: EXPECTED_DID_DOC});
+        let error;
+        let result;
+        const testDriver = new driver({allowList: null});
+        try {
+          result = await testDriver.get({did: TEST_DID});
+        } catch(e) {
+          error = e;
+        }
+        expect(error).to.not.exist;
+        expect(result).to.exist;
+        stub.restore();
+      });
+      it('should not allow a domain not on allowList', async function() {
+        let error;
+        let result;
+        const testDriver = new driver({allowList: ['not-test-url.net']});
+        try {
+          result = await testDriver.get({did: TEST_DID});
+        } catch(e) {
+          error = e;
+        }
+        expect(result).to.not.exist;
+        expect(error).to.exist;
+        expect(error).to.be.instanceOf(Error);
+        expect(error.message).to.equal(
+          'Domain w3c-ccg.github.io is not allowed.');
+      });
+      it('should not allow a domain with a different port', async function() {
+        let error;
+        let result;
+        const testDriver = new driver({allowList: ['w3c-ccg.github.io:46443']});
+        try {
+          result = await testDriver.get({did: TEST_DID});
+        } catch(e) {
+          error = e;
+        }
+        expect(result).to.not.exist;
+        expect(error).to.exist;
+        expect(error).to.be.instanceOf(Error);
+        expect(error.message).to.equal(
+          'Domain w3c-ccg.github.io is not allowed.');
+      });
+      it('should allow a domain on allowList', async function() {
+        const stub = stubRequest({url: FILE_URL, data: EXPECTED_DID_DOC});
+        let error;
+        let result;
+        const testDriver = new driver({allowList: ['w3c-ccg.github.io']});
+        try {
+          result = await testDriver.get({did: TEST_DID});
+        } catch(e) {
+          error = e;
+        }
+        expect(error).to.not.exist;
+        expect(result).to.exist;
+        stub.restore();
+      });
+    });
+    describe('generate', function() {
+      it('should allow any domain if no allowList', async function() {
+        let error;
+        let result;
+        const testDriver = new driver({allowList: null});
+        try {
+          result = await testDriver.generate({url: TEST_URL});
+        } catch(e) {
+          error = e;
+        }
+        expect(error).to.not.exist;
+        expect(result).to.exist;
+      });
+      it('should not allow a domain not on allowList', async function() {
+        let error;
+        let result;
+        const testDriver = new driver({allowList: ['not-test-url.net']});
+        try {
+          result = await testDriver.generate({url: TEST_URL});
+        } catch(e) {
+          error = e;
+        }
+        expect(result).to.not.exist;
+        expect(error).to.exist;
+        expect(error).to.be.instanceOf(Error);
+        expect(error.message).to.equal(
+          'Domain w3c-ccg.github.io is not allowed.');
+      });
+      it('should not allow a domain with a different port', async function() {
+        let error;
+        let result;
+        const testDriver = new driver({allowList: ['w3c-ccg.github.io:46443']});
+        try {
+          result = await testDriver.generate({url: TEST_URL});
+        } catch(e) {
+          error = e;
+        }
+        expect(result).to.not.exist;
+        expect(error).to.exist;
+        expect(error).to.be.instanceOf(Error);
+        expect(error.message).to.equal(
+          'Domain w3c-ccg.github.io is not allowed.');
+      });
+      it('should allow a domain on allowList', async function() {
+        let error;
+        let result;
+        const testDriver = new driver({allowList: ['w3c-ccg.github.io']});
+        try {
+          result = await testDriver.generate({url: TEST_URL});
+        } catch(e) {
+          error = e;
+        }
+        expect(error).to.not.exist;
+        expect(result).to.exist;
+      });
+    });
+  });
   describe('get', () => {
     it('should get the DID Document for a did:web DID', async () => {
       const stub = stubRequest({url: FILE_URL, data: EXPECTED_DID_DOC});
@@ -194,62 +312,6 @@ describe('did:web method driver', () => {
         'verificationMethod'
       ]);
       expect(didDocument).eql(EXPECTED_DID_DOC);
-    });
-  });
-  describe('allowList', () => {
-    it('should allow any domain if no allowList', async function() {
-      let error;
-      let result;
-      const testDriver = new driver({allowList: null});
-      try {
-        result = await testDriver.generate({url: TEST_URL});
-      } catch(e) {
-        error = e;
-      }
-      expect(error).to.not.exist;
-      expect(result).to.exist;
-    });
-    it('should not allow a domain not on allowList', async function() {
-      let error;
-      let result;
-      const testDriver = new driver({allowList: ['not-test-url.net']});
-      try {
-        result = await testDriver.generate({url: TEST_URL});
-      } catch(e) {
-        error = e;
-      }
-      expect(result).to.not.exist;
-      expect(error).to.exist;
-      expect(error).to.be.instanceOf(Error);
-      expect(error.message).to.equal(
-        'Domain w3c-ccg.github.io is not allowed.');
-    });
-    it('should not allow a domain with a different port', async function() {
-      let error;
-      let result;
-      const testDriver = new driver({allowList: ['w3c-ccg.github.io:46443']});
-      try {
-        result = await testDriver.generate({url: TEST_URL});
-      } catch(e) {
-        error = e;
-      }
-      expect(result).to.not.exist;
-      expect(error).to.exist;
-      expect(error).to.be.instanceOf(Error);
-      expect(error.message).to.equal(
-        'Domain w3c-ccg.github.io is not allowed.');
-    });
-    it('should allow a domain on allowList', async function() {
-      let error;
-      let result;
-      const testDriver = new driver({allowList: ['w3c-ccg.github.io']});
-      try {
-        result = await testDriver.generate({url: TEST_URL});
-      } catch(e) {
-        error = e;
-      }
-      expect(error).to.not.exist;
-      expect(result).to.exist;
     });
   });
   describe('method', () => {
