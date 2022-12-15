@@ -220,6 +220,24 @@ describe('did:web method driver', () => {
       }
       expect(result).to.not.exist;
       expect(error).to.exist;
+      expect(error).to.be.instanceOf(Error);
+      expect(error.message).to.equal(
+        'Domain w3c-ccg.github.io is not allowed.');
+    });
+    it('should not allow a domain with a different port', async function() {
+      let error;
+      let result;
+      const testDriver = new driver({allowList: ['w3c-ccg.github.io:46443']});
+      try {
+        result = await testDriver.generate({url: TEST_URL});
+      } catch(e) {
+        error = e;
+      }
+      expect(result).to.not.exist;
+      expect(error).to.exist;
+      expect(error).to.be.instanceOf(Error);
+      expect(error.message).to.equal(
+        'Domain w3c-ccg.github.io is not allowed.');
     });
     it('should allow a domain on allowList', async function() {
       let error;
