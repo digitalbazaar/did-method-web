@@ -196,7 +196,44 @@ describe('did:web method driver', () => {
       expect(didDocument).eql(EXPECTED_DID_DOC);
     });
   });
-
+  describe('allowList', () => {
+    it('should allow any domain if no allowList', async function() {
+      let error;
+      let result;
+      const testDriver = new driver({allowList: null});
+      try {
+        result = await testDriver.generate({url: TEST_URL});
+      } catch(e) {
+        error = e;
+      }
+      expect(error).to.not.exist;
+      expect(result).to.exist;
+    });
+    it('should not allow a domain not on allowList', async function() {
+      let error;
+      let result;
+      const testDriver = new driver({allowList: ['not-test-url.net']});
+      try {
+        result = await testDriver.generate({url: TEST_URL});
+      } catch(e) {
+        error = e;
+      }
+      expect(result).to.not.exist;
+      expect(error).to.exist;
+    });
+    it('should allow a domain on allowList', async function() {
+      let error;
+      let result;
+      const testDriver = new driver({allowList: ['w3c-ccg.github.io']});
+      try {
+        result = await testDriver.generate({url: TEST_URL});
+      } catch(e) {
+        error = e;
+      }
+      expect(error).to.not.exist;
+      expect(result).to.exist;
+    });
+  });
   describe('method', () => {
     it('should return did method id', async () => {
       expect(didWebDriver.method).to.equal('web');
