@@ -1,8 +1,8 @@
 {
-  "name": "@digitalbazaar/did-method-key",
+  "name": "@digitalbazaar/did-method-web",
   "version": "3.0.1-0",
-  "description": "A did:key method resolver.",
-  "homepage": "https://github.com/digitalbazaar/did-method-key",
+  "description": "A did:web method resolver.",
+  "homepage": "https://github.com/digitalbazaar/did-method-web",
   "author": {
     "name": "Digital Bazaar, Inc.",
     "email": "support@digitalbazaar.com",
@@ -10,10 +10,10 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/digitalbazaar/did-method-key"
+    "url": "https://github.com/digitalbazaar/did-method-web"
   },
   "bugs": {
-    "url": "https://github.com/digitalbazaar/did-method-key/issues",
+    "url": "https://github.com/digitalbazaar/did-method-web/issues",
     "email": "support@digitalbazaar.com"
   },
   "license": "BSD-3-Clause",
