@@ -8,6 +8,9 @@ const {expect} = chai;
 
 import {didToUrl} from '../lib/index.js';
 
+/*
+ * Tests for turning dids into urls
+ */
 describe('didToUrl', function() {
   it('should throw if did is missing', function() {
     let result;

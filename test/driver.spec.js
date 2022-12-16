@@ -27,6 +27,7 @@ import {
   expectedDidDoc2018
 } from './expected-data.js';
 
+// tests for DidWebDriver
 describe('did:web method driver', () => {
   describe('allowList', () => {
     describe('get', function() {
