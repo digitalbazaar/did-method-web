@@ -213,6 +213,48 @@ await didWebDriver2018.get({did});
 }
 ```
 
+### Allow List
+This driver allows you to restrict the domains it will generate and resolve for.
+To do this pass the parameter `allowList` to either `DidWebDriver` or the `driver` function.
+
+```js
+import {DidWebDriver, driver} from '@digitalbazaar/did-method-web';
+
+const allowList = ['safe-domain.org', 'localhost:46443'];
+
+const restrictedDriver = new DidWebDriver({allowList});
+// this will throw
+const failedGenerate = await restrictedDriver.generate({url: 'https://unsafe-domain.net'});
+// this will succeed
+const succesfullGenerate = await restrictedDriver.generate({url: 'https://safe-domain.org'});
+
+// get is also restricted
+// this will fail
+const failedDidDocument = await restrictedDriver.get({did: 'did:web:unsafe-domain.net'});
+const succesfullDidDocument = await restrictedDriver.get({did: 'did:web:safe-domain.org'});
+
+// same for driver
+const restrictedDriver2 = driver({allowList});
+// same tests here
+```
+
+### fetchOptions
+This library resolves HTTP requests using implementations of [`fetch`](https://fetch.spec.whatwg.org/).
+The following apis will accept a `fetchOptions` parameter: `DidWebDriver`, `driver`, and `driver.get`.
+
+```js
+import {DidWebDriver, driver} from '@digitalbazaar/did-method-web';
+// accept really large didDocuments
+const fetchOptions = {size: 81920000};
+const driver = new driver({fetchOptions});
+const fetchOptions2 = {redirect: 'follow'};
+const did = 'did:web:safe-domain.org';
+// this will combine the two fetchOptions with get's fetchOptions overriding the ones 
+// driver received
+const didDocument = await driver.get({did, fetchOptions: fetchOptions2})
+// this can also be done via new DidWebDriver({fetchOptions});
+```
+
 ### Helper Functions
 In addition to the did:web driver, this package also exports several helper functions for working with did:web DIDs.
 
