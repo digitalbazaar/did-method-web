@@ -2,30 +2,26 @@
  * Copyright (c) 2023 Digital Bazaar, Inc. All rights reserved.
  */
 import chai from 'chai';
-chai.should();
-const {expect} = chai;
-
 import {driver} from '../lib/index.js';
 import {Ed25519VerificationKey2018} from
   '@digitalbazaar/ed25519-verification-key-2018';
 import {stubRequest} from './helpers.js';
-
-const didWebDriver = driver();
-
-// eslint-disable-next-line max-len
-const TEST_SEED = '8c2114a150a16209c653817acc7f3e7e9c6c6290ae93d6689cbd61bb038cd31b';
-const TEST_DID = 'did:web:w3c-ccg.github.io:user:alice';
-const host = 'https://w3c-ccg.github.io';
-const path = '/user/alice';
-const TEST_URL = `${host}${path}`;
-const FILE_URL = `${TEST_URL}/did.json`;
-
 // TODO
 //import EXPECTED_DID_DOC from './expected-did-doc.json' assert {type: 'json'};
 import {
   expectedDidDoc as EXPECTED_DID_DOC,
   expectedDidDoc2018
 } from './expected-data.js';
+import {
+  FILE_URL,
+  TEST_DID,
+  TEST_SEED,
+  TEST_URL,
+} from './constants.js';
+
+chai.should();
+const {expect} = chai;
+const didWebDriver = driver();
 
 // tests for DidWebDriver
 describe('did:web method driver', () => {
