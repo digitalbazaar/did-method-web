@@ -7,6 +7,7 @@ const {expect} = chai;
 
 import {urlToDid} from '../lib/index.js';
 
+// Tests for turning urls into dids
 describe('urlToDid', function() {
   it('should throw if url is missing', function() {
     let result;
