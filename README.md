@@ -213,6 +213,25 @@ await didWebDriver2018.get({did});
 }
 ```
 
+### Helper Functions
+In addition to the did:web driver, this package also exports several helper functions for working with did:web DIDs.
+
+To convert a `did:web` to its corresponding URL:
+
+```js
+import {didToUrl} from '@digitalbazaar/did-method-web';
+const did = 'did:web:w3c-ccg.github.io:user:alice';
+const didUrl = didToUrl(did);
+// https://w3c-ccg.github.io/user/alice/did.json
+```
+To convert a URL to its corresponding `did:web` DID
+```js
+import {urlToDid} from '@digitalbazaar/did-method-web';
+const url = 'https://w3c-ccg.github.io/user/alice/did.json'
+const did = urlToDid(url);
+// did:web:w3c-ccg.github.io:user:alice
+```
+
 ## Contribute
 
 See [the contribute file](https://github.com/digitalbazaar/bedrock/blob/master/CONTRIBUTING.md)!
