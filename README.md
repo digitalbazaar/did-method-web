@@ -170,6 +170,48 @@ const didDocument = await didWebDriver.get({did});
 ```
 
 (Results in the [example DID Doc](#example-did-document) above).
+### Backwards Compatibility with the 2018/2019 Crypto Suites
+
+By default, this `did:web` driver returns DID Documents that have the 2020
+crypto suites for verification and key agreement.
+If you need DID Documents that are using the 2018/2019 crypto suites,
+you can customize the driver as follows.
+
+```js
+import {
+  Ed25519VerificationKey2018
+} from '@digitalbazaar/ed25519-verification-key-2018';
+import * as didWeb from '@digitalbazaar/did-method-web';
+
+const didWebDriver2018 = didWeb.driver({
+ verificationSuite: Ed25519VerificationKey2018
+});
+
+const did = 'did:web:w3c-ccg.github.io:user:alice:2018';
+await didWebDriver2018.get({did});
+// ->
+{
+  '@context': [
+    'https://www.w3.org/ns/did/v1',
+    'https://w3id.org/security/suites/ed25519-2018/v1',
+    'https://w3id.org/security/suites/x25519-2019/v1'
+  ],
+  id: 'did:web:w3c-ccg.github.io:user:alice:2018',
+  verificationMethod: [{
+    id: 'did:web:w3c-ccg.github.io:user:alice:2018#z6MkpTHR8VNsBxYAAWHut2Geadd9jSwuBV8xRoAnwWsdvktH',
+    type: 'Ed25519VerificationKey2018',
+    controller: 'did:web:w3c-ccg.github.io:user:alice:2018',
+    publicKeyBase58: 'B12NYF8RrR3h41TDCTJojY59usg3mbtbjnFs7Eud1Y6u'
+  }],
+  // etc,
+  keyAgreement: [{
+    id: 'did:web:w3c-ccg.github.io:user:alice:2018#z6LSbysY2xFMRpGMhb7tFTLMpeuPRaqaWM1yECx2AtzE3KCc',
+    type: 'X25519KeyAgreementKey2019',
+    controller: 'did:web:w3c-ccg.github.io:user:alice:2018',
+    publicKeyBase58: 'JhNWeSVLMYccCk7iopQW4guaSJTojqpMEELgSLhKwRr'
+  }]
+}
+```
 
 ## Contribute
 
