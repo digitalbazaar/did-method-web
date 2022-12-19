@@ -2,22 +2,22 @@
  * Copyright (c) 2023 Digital Bazaar, Inc. All rights reserved.
  */
 import chai from 'chai';
-import {driver} from '../lib/index.js';
+import {driver} from '../../lib/index.js';
 import {Ed25519VerificationKey2018} from
   '@digitalbazaar/ed25519-verification-key-2018';
-import {stubRequest} from './helpers.js';
+import {stubRequest} from '../helpers.js';
 // TODO
 //import EXPECTED_DID_DOC from './expected-did-doc.json' assert {type: 'json'};
 import {
   expectedDidDoc as EXPECTED_DID_DOC,
   expectedDidDoc2018
-} from './expected-data.js';
+} from '../expected-data.js';
 import {
   FILE_URL,
   TEST_DID,
   TEST_SEED,
   TEST_URL,
-} from './constants.js';
+} from '../constants.js';
 
 chai.should();
 const {expect} = chai;
