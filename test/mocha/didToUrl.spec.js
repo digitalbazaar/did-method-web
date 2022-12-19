@@ -5,7 +5,7 @@ import chai from 'chai';
 chai.should();
 const {expect} = chai;
 
-import {didToUrl} from '../lib/index.js';
+import {didToUrl} from '../../lib/index.js';
 
 /*
  * Tests for turning dids into urls
