@@ -1,8 +1,8 @@
 {
-  "name": "@digitalbazaar/did-method-key",
+  "name": "@digitalbazaar/did-method-web",
   "version": "3.0.1-0",
-  "description": "A did:key method resolver.",
-  "homepage": "https://github.com/digitalbazaar/did-method-key",
+  "description": "A did:web method resolver.",
+  "homepage": "https://github.com/digitalbazaar/did-method-web",
   "author": {
     "name": "Digital Bazaar, Inc.",
     "email": "support@digitalbazaar.com",
@@ -10,10 +10,10 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/digitalbazaar/did-method-key"
+    "url": "https://github.com/digitalbazaar/did-method-web"
   },
   "bugs": {
-    "url": "https://github.com/digitalbazaar/did-method-key/issues",
+    "url": "https://github.com/digitalbazaar/did-method-web/issues",
     "email": "support@digitalbazaar.com"
   },
   "license": "BSD-3-Clause",
@@ -25,6 +25,7 @@
   "dependencies": {
     "@digitalbazaar/did-io": "^2.0.0",
     "@digitalbazaar/ed25519-verification-key-2020": "^4.0.0",
+    "@digitalbazaar/http-client": "^3.2.0",
     "@digitalbazaar/x25519-key-agreement-key-2019": "^6.0.0",
     "@digitalbazaar/x25519-key-agreement-key-2020": "^3.0.0"
   },
@@ -34,9 +35,10 @@
     "chai": "^4.3.6",
     "cross-env": "^7.0.3",
     "eslint": "^8.16.0",
-    "eslint-config-digitalbazaar": "^3.0.0",
+    "eslint-config-digitalbazaar": "^4.2.0",
+    "eslint-plugin-import": "^2.26.0",
     "eslint-plugin-jsdoc": "^39.3.2",
-    "eslint-plugin-unicorn": "^42.0.0",
+    "eslint-plugin-unicorn": "^45.0.1",
     "karma": "^6.3.20",
     "karma-babel-preprocessor": "^8.0.2",
     "karma-chai": "^0.1.0",
@@ -47,6 +49,7 @@
     "karma-webpack": "^5.0.0",
     "mocha": "^10.0.0",
     "mocha-lcov-reporter": "^1.3.0",
+    "sinon": "^15.0.0",
     "webpack": "^5.73.0"
   },
   "c8": {
