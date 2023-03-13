@@ -214,6 +214,7 @@ await didWebDriver2018.get({did});
 ```
 
 ### Allow List
+
 This driver allows you to restrict the domains it will generate and resolve for.
 To do this pass the parameter `allowList` to either `DidWebDriver` or the `driver` function.
 
