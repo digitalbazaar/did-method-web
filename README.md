@@ -1,6 +1,6 @@
 # did:web method driver _(@digitalbazaar/did-method-web)_
 
-[![Node.js CI](https://github.com/digitalbazaar/did-method-web/workflows/Node.js%20CI/badge.svg)](https://github.com/digitalbazaar/did-method-web/actions?query=workflow%3A%22Node.js+CI%22)
+[![Build status](https://github.com/digitalbazaar/did-method-web/actions/workflows/main.yml/badge.svg)](https://github.com/digitalbazaar/did-method-web/actions/workflows/main.yml)
 [![Coverage status](https://img.shields.io/codecov/c/github/digitalbazaar/did-method-web)](https://codecov.io/gh/digitalbazaar/did-method-web)
 [![NPM Version](https://img.shields.io/npm/v/@digitalbazaar/did-method-web)](https://www.npmjs.com/package/@digitalbazaar/did-method-web)
 
