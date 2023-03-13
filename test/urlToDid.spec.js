@@ -20,7 +20,7 @@ describe('urlToDid', function() {
     expect(result).to.not.exist;
     expect(error).to.exist;
     expect(error).to.be.an.instanceOf(TypeError);
-    expect(error.message).to.include('"url" must be a string or a url');
+    expect(error.message).to.include('"url" must be a string or a URL');
   });
   it('should throw if url protocol is not https', function() {
     let result;
