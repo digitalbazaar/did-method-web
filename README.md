@@ -28,8 +28,8 @@ See also (related specs):
 A `did:web` method driver for the [`did-io`](https://github.com/digitalbazaar/did-io)
 client library and for standalone use.
 
-`did:web` allows dids to bootstrap trust using a web domain's existing reputation.
-`did:web` dids come in the following format:
+`did:web` allows DIDs to bootstrap trust using a web domain's existing reputation.
+`did:web` DIDs come in the following format:
 
 ```
 did:web:<subdomain.domain%3Aport>:optional:path
