@@ -58,7 +58,7 @@ describe('did:web method driver', () => {
         expect(error).to.exist;
         expect(error).to.be.instanceOf(Error);
         expect(error.message).to.equal(
-          'Domain w3c-ccg.github.io is not allowed.');
+          'Domain "w3c-ccg.github.io" is not allowed.');
       });
       it('should not allow a domain with a different port', async function() {
         let error;
@@ -73,7 +73,7 @@ describe('did:web method driver', () => {
         expect(error).to.exist;
         expect(error).to.be.instanceOf(Error);
         expect(error.message).to.equal(
-          'Domain w3c-ccg.github.io is not allowed.');
+          'Domain "w3c-ccg.github.io" is not allowed.');
       });
       it('should allow a domain on allowList', async function() {
         const stub = stubRequest({url: FILE_URL, data: EXPECTED_DID_DOC});
@@ -116,7 +116,7 @@ describe('did:web method driver', () => {
         expect(error).to.exist;
         expect(error).to.be.instanceOf(Error);
         expect(error.message).to.equal(
-          'Domain w3c-ccg.github.io is not allowed.');
+          'Domain "w3c-ccg.github.io" is not allowed.');
       });
       it('should not allow a domain with a different port', async function() {
         let error;
@@ -131,7 +131,7 @@ describe('did:web method driver', () => {
         expect(error).to.exist;
         expect(error).to.be.instanceOf(Error);
         expect(error.message).to.equal(
-          'Domain w3c-ccg.github.io is not allowed.');
+          'Domain "w3c-ccg.github.io" is not allowed.');
       });
       it('should allow a domain on allowList', async function() {
         let error;
