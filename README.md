@@ -240,6 +240,7 @@ const restrictedDriver2 = driver({allowList});
 ```
 
 ### fetchOptions
+
 This library resolves HTTP requests using implementations of [`fetch`](https://fetch.spec.whatwg.org/).
 The following apis will accept a `fetchOptions` parameter: `DidWebDriver`, `driver`, and `driver.get`.
 
