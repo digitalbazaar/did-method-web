@@ -257,6 +257,7 @@ const didDocument = await driver.get({did, fetchOptions: fetchOptions2})
 ```
 
 ### Helper Functions
+
 In addition to the did:web driver, this package also exports several helper functions for working with did:web DIDs.
 
 To convert a `did:web` to its corresponding URL:
