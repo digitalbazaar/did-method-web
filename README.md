@@ -82,6 +82,16 @@ That DID would correspond to the following Document:
 }
 ```
 
+## Security
+
+`did:web` has security issues outlined in the [security section of the specification](https://w3c-ccg.github.io/did-method-web/#security-and-privacy-considerations).
+
+"""
+This DID method does not specify any authentication or authorization mechanism for writing to, removing or creating the DID Document, leaving it up to implementations to protect did:web documents as with any other web resource.
+
+It is up to implementer to secure their web environments according to industry best practices for updating or otherwise managing web content based on the specific needs of their threat environment.
+"""
+
 ## Install
 
 Requires Node.js 14+
