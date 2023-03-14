@@ -34,7 +34,7 @@ describe('didToUrl', function() {
     expect(result).to.not.exist;
     expect(error).to.exist;
     expect(error).to.be.an.instanceOf(Error);
-    expect(error.message).to.include('Scheme must be "did" received urn');
+    expect(error.message).to.include('Scheme must be "did"; received "urn"');
   });
   it('should throw if did method is not "web"', function() {
     let result;
@@ -47,7 +47,7 @@ describe('didToUrl', function() {
     expect(result).to.not.exist;
     expect(error).to.exist;
     expect(error).to.be.an.instanceOf(Error);
-    expect(error.message).to.include('Did method must be "web" received key');
+    expect(error.message).to.include('Did method must be "web"; received "key"');
   });
   it('should throw if did contains an unescaped "/"', function() {
     let result;
@@ -61,7 +61,7 @@ describe('didToUrl', function() {
     expect(error).to.exist;
     expect(error).to.be.an.instanceOf(Error);
     expect(error.message).to.include(
-      'Expected domain to not contain a path "/" received bar.com/path/');
+      'Expected domain to not contain a path; received "bar.com/path/"');
   });
   it('should add path ".well-known/did.json" if no paths on did', function() {
     let result;
