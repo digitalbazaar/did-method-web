@@ -34,7 +34,7 @@ describe('urlToDid', function() {
     expect(error).to.exist;
     expect(error).to.be.an.instanceOf(TypeError);
     expect(error.message).to.include(
-      '"url" protocol must by "https:" received http:');
+      '"url" protocol must by "https:"; received "http:"');
   });
   it('should throw if url is an empty string', function() {
     let result;
