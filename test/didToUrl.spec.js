@@ -47,7 +47,8 @@ describe('didToUrl', function() {
     expect(result).to.not.exist;
     expect(error).to.exist;
     expect(error).to.be.an.instanceOf(Error);
-    expect(error.message).to.include('Did method must be "web"; received "key"');
+    expect(error.message).to.include(
+      'Did method must be "web"; received "key"');
   });
   it('should throw if did contains an unescaped "/"', function() {
     let result;
