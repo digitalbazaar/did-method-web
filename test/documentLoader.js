@@ -1,7 +1,6 @@
 /*!
  * Copyright (c) 2022-2023 Digital Bazaar, Inc. All rights reserved.
  */
-
 import {CONTEXT, CONTEXT_URL} from 'ed25519-signature-2020-context';
 import {defaultDocumentLoader} from '@digitalbazaar/vc';
 import {expectedDidDoc} from './expected-data.js';
