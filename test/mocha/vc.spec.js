@@ -50,7 +50,7 @@ describe('vc', function() {
       expect(issuedVc.proof.verificationMethod).to.equal(key.id);
     });
   });
-  describe('Verify', function() {
+  describe('verify', function() {
     it('should verify a vc', async function() {
       const issuedVc = await vc.issue({suite, credential, documentLoader});
       expect(issuedVc).to.exist;
