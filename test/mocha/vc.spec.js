@@ -38,7 +38,7 @@ describe('vc', function() {
     key = methodFor({purpose: 'assertionMethod'});
     suite = new Ed25519Signature2020({key});
   });
-  describe('Sign', async function() {
+  describe('sign', async function() {
     it('should issue a Vc', async function() {
       const issuedVc = await vc.issue({suite, credential, documentLoader});
       expect(issuedVc).to.exist;
