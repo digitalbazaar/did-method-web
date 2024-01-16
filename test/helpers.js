@@ -1,7 +1,6 @@
 /*!
- * Copyright (c) 2023 Digital Bazaar, Inc. All rights reserved.
+ * Copyright (c) 2023-2024 Digital Bazaar, Inc. All rights reserved.
  */
-
 import {httpClient} from '@digitalbazaar/http-client';
 import sinon from 'sinon';
 

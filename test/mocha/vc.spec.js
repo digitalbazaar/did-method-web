@@ -1,20 +1,25 @@
 /*!
- * Copyright (c) 2019-2023 Digital Bazaar, Inc. All rights reserved.
+ * Copyright (c) 2019-2024 Digital Bazaar, Inc. All rights reserved.
  */
 import * as vc from '@digitalbazaar/vc';
 import {
   TEST_DID,
-  TEST_SEED,
   TEST_URL,
 } from '../constants.js';
 import chai from 'chai';
 import {documentLoader} from '../documentLoader.js';
 import {driver} from '../../lib/index.js';
 import {Ed25519Signature2020} from '@digitalbazaar/ed25519-signature-2020';
+import {Ed25519VerificationKey2020} from
+  '@digitalbazaar/ed25519-verification-key-2020';
 
 chai.should();
 const {expect} = chai;
 const didWebDriver = driver();
+didWebDriver.use({
+  multibaseMultikeyHeader: 'z6Mk',
+  fromMultibase: Ed25519VerificationKey2020.from
+});
 const credential = {
   '@context': [
     'https://www.w3.org/2018/credentials/v1',
@@ -30,10 +35,14 @@ describe('vc', function() {
   let key;
   let suite;
   before(async function() {
-    const seedBytes = (new TextEncoder()).encode(TEST_SEED).slice(0, 32);
-    const {methodFor} = await didWebDriver.generate({
-      seed: seedBytes,
-      url: TEST_URL
+    // eslint-disable-next-line max-len
+    const publicKeyMultibase = 'z6MknCCLeeHBUaHu4aHSVLDCYQW9gjVJ7a63FpMvtuVMy53T';
+    const verificationKeyPair = await Ed25519VerificationKey2020.from({
+      publicKeyMultibase
+    });
+    const {methodFor} = await didWebDriver.fromKeyPair({
+      url: TEST_URL,
+      verificationKeyPair
     });
     key = methodFor({purpose: 'assertionMethod'});
     suite = new Ed25519Signature2020({key});
