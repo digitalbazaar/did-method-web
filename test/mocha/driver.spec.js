@@ -1,12 +1,14 @@
 /*!
  * Copyright (c) 2023-2024 Digital Bazaar, Inc. All rights reserved.
  */
+import * as Bls12381Multikey from '@digitalbazaar/bls12-381-multikey';
+import * as EcdsaMultikey from '@digitalbazaar/ecdsa-multikey';
 import chai from 'chai';
 import {driver} from '../../lib/index.js';
-import {Ed25519VerificationKey2020} from
-  '@digitalbazaar/ed25519-verification-key-2020';
 import {Ed25519VerificationKey2018} from
   '@digitalbazaar/ed25519-verification-key-2018';
+import {Ed25519VerificationKey2020} from
+  '@digitalbazaar/ed25519-verification-key-2020';
 import {stubRequest} from '../helpers.js';
 // TODO
 //import EXPECTED_DID_DOC from './expected-did-doc.json' assert {type: 'json'};
@@ -19,6 +21,9 @@ import {
   TEST_DID,
   TEST_URL,
 } from '../constants.js';
+import {
+  X25519KeyAgreementKey2020
+} from '@digitalbazaar/x25519-key-agreement-key-2020';
 
 chai.should();
 const {expect} = chai;
@@ -93,7 +98,7 @@ describe('did:web method driver', () => {
     });
     describe('generate', function() {
       let keyPair;
-      before(async() => {
+      before(async () => {
         const publicKeyMultibase =
           'zDnaeucDGfhXHoJVqot3p21RuupNJ2fZrs8Lb1GV83VnSo2jR';
         keyPair = await EcdsaMultikey.from({publicKeyMultibase});
