@@ -5,15 +5,15 @@ import chai from 'chai';
 chai.should();
 const {expect} = chai;
 
-import {urlToDid} from '../../lib/index.js';
+import {httpsUrlToDidUrl} from '../../lib/index.js';
 
-// Tests for turning urls into dids
+// tests for turning HTTPS (well-known DID web) urls into DID urls
 describe('urlToDid', function() {
   it('should throw if url is missing', function() {
     let result;
     let error;
     try {
-      result = urlToDid();
+      result = httpsUrlToDidUrl();
     } catch(e) {
       error = e;
     }
@@ -26,7 +26,7 @@ describe('urlToDid', function() {
     let result;
     let error;
     try {
-      result = urlToDid('http://bar.com');
+      result = httpsUrlToDidUrl('http://bar.com');
     } catch(e) {
       error = e;
     }
@@ -40,7 +40,7 @@ describe('urlToDid', function() {
     let result;
     let error;
     try {
-      result = urlToDid('');
+      result = httpsUrlToDidUrl('');
     } catch(e) {
       error = e;
     }
@@ -53,7 +53,7 @@ describe('urlToDid', function() {
     let result;
     let error;
     try {
-      result = urlToDid('invalid');
+      result = httpsUrlToDidUrl('invalid');
     } catch(e) {
       error = e;
     }
@@ -66,7 +66,7 @@ describe('urlToDid', function() {
     let result;
     let error;
     try {
-      result = urlToDid('https://www.bar.org');
+      result = httpsUrlToDidUrl('https://www.bar.org');
     } catch(e) {
       error = e;
     }
@@ -79,7 +79,7 @@ describe('urlToDid', function() {
     let result;
     let error;
     try {
-      result = urlToDid('https://www.bar.org:46443');
+      result = httpsUrlToDidUrl('https://www.bar.org:46443');
     } catch(e) {
       error = e;
     }
@@ -92,7 +92,7 @@ describe('urlToDid', function() {
     let result;
     let error;
     try {
-      result = urlToDid('https://www.bar.org:46443/');
+      result = httpsUrlToDidUrl('https://www.bar.org:46443/');
     } catch(e) {
       error = e;
     }
@@ -105,7 +105,7 @@ describe('urlToDid', function() {
     let result;
     let error;
     try {
-      result = urlToDid('https://www.bar.org:46443/?service=bar');
+      result = httpsUrlToDidUrl('https://www.bar.org:46443/?service=bar');
     } catch(e) {
       error = e;
     }
@@ -118,7 +118,7 @@ describe('urlToDid', function() {
     let result;
     let error;
     try {
-      result = urlToDid('https://www.bar.org:46443/#someKey');
+      result = httpsUrlToDidUrl('https://www.bar.org:46443/#someKey');
     } catch(e) {
       error = e;
     }
@@ -131,7 +131,8 @@ describe('urlToDid', function() {
     let result;
     let error;
     try {
-      result = urlToDid('https://www.bar.org:46443/?service=bar#someKey');
+      result = httpsUrlToDidUrl(
+        'https://www.bar.org:46443/?service=bar#someKey');
     } catch(e) {
       error = e;
     }
@@ -144,7 +145,8 @@ describe('urlToDid', function() {
     let result;
     let error;
     try {
-      result = urlToDid('https://www.bar.org:46443/foo?service=bar#someKey');
+      result = httpsUrlToDidUrl(
+        'https://www.bar.org:46443/foo?service=bar#someKey');
     } catch(e) {
       error = e;
     }
@@ -158,7 +160,7 @@ describe('urlToDid', function() {
     let result;
     let error;
     try {
-      result = urlToDid(
+      result = httpsUrlToDidUrl(
         'https://www.bar.org:46443/foo+srv?service=bar#someKey');
     } catch(e) {
       error = e;
@@ -173,7 +175,7 @@ describe('urlToDid', function() {
     let result;
     let error;
     try {
-      result = urlToDid(
+      result = httpsUrlToDidUrl(
         'https://www.bar.org:46443/.well-known/did.json');
     } catch(e) {
       error = e;
@@ -188,7 +190,7 @@ describe('urlToDid', function() {
     let result;
     let error;
     try {
-      result = urlToDid(
+      result = httpsUrlToDidUrl(
         'https://www.bar.org:46443/foo/did.json');
     } catch(e) {
       error = e;
