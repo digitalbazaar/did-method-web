@@ -307,9 +307,23 @@ describe('did:web method driver', () => {
 
   describe('fromKeyPair', () => {
     it('should generate and get round trip', async () => {
+      const publicKeyMultibaseForVerificationKeyPair =
+        'z6MknCCLeeHBUaHu4aHSVLDCYQW9gjVJ7a63FpMvtuVMy53T';
+      const keyPairForVerification = await Ed25519VerificationKey2020.from({
+        publicKeyMultibase: publicKeyMultibaseForVerificationKeyPair
+      });
+      const publicKeyMultibaseForKeyAgreementKeyPair =
+        'z6LSbysY2xFMRpGMhb7tFTLMpeuPRaqaWM1yECx2AtzE3KCc';
+      const keyPairForKeyAgreement = await X25519KeyAgreementKey2020.from({
+        publicKeyMultibase: publicKeyMultibaseForKeyAgreementKeyPair
+      });
       const {
         didDocument, keyPairs, methodFor
-      } = await didWebDriver.fromKeyPair({url: TEST_URL});
+      } = await didWebDriver.fromKeyPair({
+        url: TEST_URL,
+        verificationKeyPair: keyPairForVerification,
+        keyAgreementKeyPair: keyPairForKeyAgreement
+      });
       const did = didDocument.id;
       expect(did).to.exist;
       expect(did).to.equal(TEST_DID);
@@ -318,15 +332,16 @@ describe('did:web method driver', () => {
       const verificationKeyPair = methodFor({purpose: 'assertionMethod'});
       const keyAgreementKeyPair = methodFor({purpose: 'keyAgreement'});
 
-      expect(keyId).to.equal(verificationKeyPair.id);
-      expect(keyAgreementKeyPair.type).to.equal('X25519KeyAgreementKey2020');
+      expect(verificationKeyPair?.id).to.equal(keyId);
+      expect(keyAgreementKeyPair?.type).to.equal('X25519KeyAgreementKey2020');
 
       expect(keyPairs.get(keyId).controller).to.equal(did);
       expect(keyPairs.get(keyId).id).to.equal(keyId);
-      stubRequest({url: FILE_URL, data: didDocument});
+      const stub = stubRequest({url: FILE_URL, data: didDocument});
 
       const fetchedDidDoc = await didWebDriver.get({did});
       expect(fetchedDidDoc).to.eql(didDocument);
+      stub.restore();
     });
 
     it('should generate DID document from ecdsa key', async () => {
@@ -341,6 +356,7 @@ describe('did:web method driver', () => {
       const {
         didDocument, keyPairs, methodFor
       } = await didWebDriverMultikey.fromKeyPair({
+        url: TEST_URL,
         verificationKeyPair: keyPair
       });
       const did = didDocument.id;
@@ -361,10 +377,11 @@ describe('did:web method driver', () => {
 
       expect(keyPairs.get(keyId).controller).to.equal(did);
       expect(keyPairs.get(keyId).id).to.equal(keyId);
-      stubRequest({url: FILE_URL, data: didDocument});
+      const stub = stubRequest({url: FILE_URL, data: didDocument});
 
-      const fetchedDidDoc = await didWebDriver.get({did});
+      const fetchedDidDoc = await didWebDriverMultikey.get({did});
       expect(fetchedDidDoc).to.eql(didDocument);
+      stub.restore();
     });
 
     it('should generate DID document from BLS12-381 key', async () => {
@@ -379,6 +396,7 @@ describe('did:web method driver', () => {
       const {
         didDocument, keyPairs, methodFor
       } = await didWebDriverMultikey.fromKeyPair({
+        url: TEST_URL,
         verificationKeyPair: keyPair
       });
       const did = didDocument.id;
@@ -389,16 +407,19 @@ describe('did:web method driver', () => {
 
       expect(keyPairs.get(keyId).controller).to.equal(did);
       expect(keyPairs.get(keyId).id).to.equal(keyId);
-      stubRequest({url: FILE_URL, data: didDocument});
+      const stub = stubRequest({url: FILE_URL, data: didDocument});
 
-      const fetchedDidDoc = await didWebDriver.get({did});
+      const fetchedDidDoc = await didWebDriverMultikey.get({did});
       expect(fetchedDidDoc).to.eql(didDocument);
+      stub.restore();
     });
 
     it('should generate DID document from X25519 key', async () => {
       // eslint-disable-next-line max-len
       const publicKeyMultibase = 'z6LSbysY2xFMRpGMhb7tFTLMpeuPRaqaWM1yECx2AtzE3KCc';
-      const keyPair = await Bls12381Multikey.from({publicKeyMultibase});
+      const keyPair = await X25519KeyAgreementKey2020.from({
+        publicKeyMultibase
+      });
       const didWebDriverMultikey = driver();
       didWebDriverMultikey.use({
         multibaseMultikeyHeader: 'z6LS',
@@ -407,20 +428,22 @@ describe('did:web method driver', () => {
       const {
         didDocument, keyPairs, methodFor
       } = await didWebDriverMultikey.fromKeyPair({
-        verificationKeyPair: keyPair
+        url: TEST_URL,
+        keyAgreementKeyPair: keyPair
       });
       const did = didDocument.id;
-      const keyId = didDocument.authentication[0];
-      const verificationKeyPair = methodFor({purpose: 'keyAgreement'});
+      const keyId = didDocument.keyAgreement[0].id;
+      const keyAgreementKeyPair = methodFor({purpose: 'keyAgreement'});
 
-      expect(keyId).to.equal(verificationKeyPair.id);
+      expect(keyId).to.equal(keyAgreementKeyPair.id);
 
       expect(keyPairs.get(keyId).controller).to.equal(did);
       expect(keyPairs.get(keyId).id).to.equal(keyId);
-      stubRequest({url: FILE_URL, data: didDocument});
+      const stub = stubRequest({url: FILE_URL, data: didDocument});
 
-      const fetchedDidDoc = await didWebDriver.get({did});
+      const fetchedDidDoc = await didWebDriverMultikey.get({did});
       expect(fetchedDidDoc).to.eql(didDocument);
+      stub.restore();
     });
 
     it('should generate DID document from Ed25519 verificationKeyPair and ' +
@@ -447,15 +470,14 @@ describe('did:web method driver', () => {
       const {
         didDocument, keyPairs, methodFor
       } = await localDriver.fromKeyPair({
+        url: TEST_URL,
         verificationKeyPair: keyPairForVerification,
         keyAgreementKeyPair: keyPairForKeyAgreement
       });
       const did = didDocument.id;
-      const keyId = `did:key:${publicKeyMultibaseForVerificationKeyPair}` +
-        `#${publicKeyMultibaseForVerificationKeyPair}`;
+      const keyId = `${TEST_DID}#${publicKeyMultibaseForVerificationKeyPair}`;
       const keyAgreementId =
-        `did:key:${publicKeyMultibaseForKeyAgreementKeyPair}` +
-        `#${publicKeyMultibaseForKeyAgreementKeyPair}`;
+        `${TEST_DID}#${publicKeyMultibaseForKeyAgreementKeyPair}`;
       expect(didDocument['@context']).to.eql([
         'https://www.w3.org/ns/did/v1',
         'https://w3id.org/security/suites/ed25519-2020/v1',
@@ -474,11 +496,9 @@ describe('did:web method driver', () => {
         .equal(publicKeyMultibaseForVerificationKeyPair);
 
       const [kak] = didDocument.keyAgreement;
-      const kakDid = `did:key:${publicKeyMultibaseForKeyAgreementKeyPair}`;
-
       expect(kak.id).to.equal(keyAgreementId);
       expect(kak.type).to.equal('X25519KeyAgreementKey2020');
-      expect(kak.controller).to.equal(kakDid);
+      expect(kak.controller).to.equal(TEST_DID);
       expect(kak.publicKeyMultibase).to
         .equal(publicKeyMultibaseForKeyAgreementKeyPair);
 
@@ -497,7 +517,7 @@ describe('did:web method driver', () => {
       expect(verificationKeyPair.id).to.equal(keyId);
       expect(keyAgreementKeyPair.id).to.equal(keyAgreementId);
       expect(keyPairs.get(keyId).controller).to.equal(did);
-      expect(keyPairs.get(keyAgreementId).controller).to.equal(kakDid);
+      expect(keyPairs.get(keyAgreementId).controller).to.equal(TEST_DID);
     });
   });
   describe('method', () => {
