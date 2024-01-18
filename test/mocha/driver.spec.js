@@ -204,7 +204,7 @@ describe('did:web method driver', () => {
         url: FILE_URL + fragment,
         data: EXPECTED_DID_DOC
       });
-      const key = await didWebDriver.get({did: keyId});
+      const key = await didWebDriver.get({url: keyId});
       const [expectedKaK] = EXPECTED_DID_DOC.keyAgreement;
       expect(key).to.eql({
         '@context': 'https://w3id.org/security/suites/x25519-2020/v1',
@@ -221,7 +221,7 @@ describe('did:web method driver', () => {
         data: expectedDidDoc2018
       });
       const didWebDriver2018 = driver();
-      const key = await didWebDriver2018.get({did: vm.id});
+      const key = await didWebDriver2018.get({url: vm.id});
       expect(key).to.eql({
         ...vm,
         '@context': 'https://w3id.org/security/suites/ed25519-2018/v1',
@@ -236,7 +236,7 @@ describe('did:web method driver', () => {
         data: EXPECTED_DID_DOC
       });
       const kakKeyId = `${TEST_DID}${fragment}`;
-      const key = await didWebDriver.get({did: kakKeyId});
+      const key = await didWebDriver.get({url: kakKeyId});
       const [expectedKak] = EXPECTED_DID_DOC.keyAgreement;
       expect(key).to.eql({
         '@context': 'https://w3id.org/security/suites/x25519-2020/v1',
@@ -253,7 +253,7 @@ describe('did:web method driver', () => {
         data: expectedDidDoc2018
       });
       const didWebDriver2018 = driver();
-      const key = await didWebDriver2018.get({did: expectedKak.id});
+      const key = await didWebDriver2018.get({url: expectedKak.id});
       expect(key).to.eql({
         ...expectedKak,
         '@context': 'https://w3id.org/security/suites/x25519-2019/v1',
