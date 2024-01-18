@@ -64,7 +64,7 @@ describe('vc', function() {
     stub.restore();
   });
   describe('sign', async function() {
-    it('should issue a Vc', async function() {
+    it('should issue a VC', async function() {
       const issuedVc = await vc.issue({
         suite: signSuite, credential, documentLoader
       });
@@ -78,7 +78,7 @@ describe('vc', function() {
     });
   });
   describe('verify', function() {
-    it('should verify a vc', async function() {
+    it('should verify a VC', async function() {
       const issuedVc = await vc.issue({
         suite: signSuite, credential, documentLoader
       });
