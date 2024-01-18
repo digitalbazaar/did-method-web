@@ -5,8 +5,6 @@ import * as Bls12381Multikey from '@digitalbazaar/bls12-381-multikey';
 import * as EcdsaMultikey from '@digitalbazaar/ecdsa-multikey';
 import chai from 'chai';
 import {driver} from '../../lib/index.js';
-import {Ed25519VerificationKey2018} from
-  '@digitalbazaar/ed25519-verification-key-2018';
 import {Ed25519VerificationKey2020} from
   '@digitalbazaar/ed25519-verification-key-2020';
 import {stubRequest} from '../helpers.js';
@@ -96,12 +94,12 @@ describe('did:web method driver', () => {
         stub.restore();
       });
     });
-    describe('generate', function() {
-      let keyPair;
+    describe('fromKeyPair', function() {
+      let verificationKeyPair;
       before(async () => {
         const publicKeyMultibase =
           'zDnaeucDGfhXHoJVqot3p21RuupNJ2fZrs8Lb1GV83VnSo2jR';
-        keyPair = await EcdsaMultikey.from({publicKeyMultibase});
+        verificationKeyPair = await EcdsaMultikey.from({publicKeyMultibase});
       });
       it('should allow any domain if no allowList', async function() {
         let error;
@@ -112,7 +110,9 @@ describe('did:web method driver', () => {
           fromMultibase: EcdsaMultikey.from
         });
         try {
-          result = await testDriver.fromKeyPair({url: TEST_URL, keyPair});
+          result = await testDriver.fromKeyPair({
+            url: TEST_URL, verificationKeyPair
+          });
         } catch(e) {
           error = e;
         }
@@ -128,7 +128,9 @@ describe('did:web method driver', () => {
           fromMultibase: EcdsaMultikey.from
         });
         try {
-          result = await testDriver.fromKeyPair({url: TEST_URL, keyPair});
+          result = await testDriver.fromKeyPair({
+            url: TEST_URL, verificationKeyPair
+          });
         } catch(e) {
           error = e;
         }
@@ -147,7 +149,9 @@ describe('did:web method driver', () => {
           fromMultibase: EcdsaMultikey.from
         });
         try {
-          result = await testDriver.fromKeyPair({url: TEST_URL, keyPair});
+          result = await testDriver.fromKeyPair({
+            url: TEST_URL, verificationKeyPair
+          });
         } catch(e) {
           error = e;
         }
@@ -166,7 +170,9 @@ describe('did:web method driver', () => {
           fromMultibase: EcdsaMultikey.from
         });
         try {
-          result = await testDriver.fromKeyPair({url: TEST_URL, keyPair});
+          result = await testDriver.fromKeyPair({
+            url: TEST_URL, verificationKeyPair
+          });
         } catch(e) {
           error = e;
         }
@@ -183,11 +189,9 @@ describe('did:web method driver', () => {
       stub.restore();
     });
 
-    it('should get the DID Doc in 2018 mode', async () => {
+    it('should get the DID Doc w/ ed25519 2018 key', async () => {
       const stub = stubRequest({url: FILE_URL, data: expectedDidDoc2018});
-      const didWebDriver2018 = driver({
-        verificationSuite: Ed25519VerificationKey2018
-      });
+      const didWebDriver2018 = driver();
       const didDocument = await didWebDriver2018.get({did: TEST_DID});
       expect(didDocument).to.eql(expectedDidDoc2018);
       stub.restore();
@@ -209,16 +213,14 @@ describe('did:web method driver', () => {
       stub.restore();
     });
 
-    it('should resolve an individual key in 2018 mode', async () => {
+    it('should resolve an ed25519 2018 key', async () => {
       const [vm] = expectedDidDoc2018.verificationMethod;
       const fragment = vm.id.split('#');
       const stub = stubRequest({
         url: FILE_URL + '#' + fragment[1],
         data: expectedDidDoc2018
       });
-      const didWebDriver2018 = driver({
-        verificationSuite: Ed25519VerificationKey2018
-      });
+      const didWebDriver2018 = driver();
       const key = await didWebDriver2018.get({did: vm.id});
       expect(key).to.eql({
         ...vm,
@@ -250,9 +252,7 @@ describe('did:web method driver', () => {
         url: FILE_URL + '#' + fragment[1],
         data: expectedDidDoc2018
       });
-      const didWebDriver2018 = driver({
-        verificationSuite: Ed25519VerificationKey2018
-      });
+      const didWebDriver2018 = driver();
       const key = await didWebDriver2018.get({did: expectedKak.id});
       expect(key).to.eql({
         ...expectedKak,

@@ -5,17 +5,15 @@ import chai from 'chai';
 chai.should();
 const {expect} = chai;
 
-import {didToUrl} from '../../lib/index.js';
+import {didUrlToHttpsUrl} from '../../lib/index.js';
 
-/*
- * Tests for turning dids into urls
- */
-describe('didToUrl', function() {
+// tests for turning `did:web` DID URLs into HTTPS (well-known DID web) URLs
+describe('didUrlToWellKnownUrl', function() {
   it('should throw if did is missing', function() {
     let result;
     let error;
     try {
-      result = didToUrl();
+      result = didUrlToHttpsUrl();
     } catch(e) {
       error = e;
     }
@@ -27,7 +25,7 @@ describe('didToUrl', function() {
     let result;
     let error;
     try {
-      result = didToUrl('urn:web:bar.com');
+      result = didUrlToHttpsUrl('urn:web:bar.com');
     } catch(e) {
       error = e;
     }
@@ -40,7 +38,7 @@ describe('didToUrl', function() {
     let result;
     let error;
     try {
-      result = didToUrl('did:key:bar.com');
+      result = didUrlToHttpsUrl('did:key:bar.com');
     } catch(e) {
       error = e;
     }
@@ -54,7 +52,7 @@ describe('didToUrl', function() {
     let result;
     let error;
     try {
-      result = didToUrl('did:web:bar.com/path/');
+      result = didUrlToHttpsUrl('did:web:bar.com/path/');
     } catch(e) {
       error = e;
     }
@@ -68,7 +66,7 @@ describe('didToUrl', function() {
     let result;
     let error;
     try {
-      result = didToUrl('did:web:bar.com');
+      result = didUrlToHttpsUrl('did:web:bar.com');
     } catch(e) {
       error = e;
     }
@@ -81,7 +79,7 @@ describe('didToUrl', function() {
     let result;
     let error;
     try {
-      result = didToUrl('did:web:bar.com:path');
+      result = didUrlToHttpsUrl('did:web:bar.com:path');
     } catch(e) {
       error = e;
     }
@@ -94,7 +92,7 @@ describe('didToUrl', function() {
     let result;
     let error;
     try {
-      result = didToUrl('did:web:bar.com%3A46443:path');
+      result = didUrlToHttpsUrl('did:web:bar.com%3A46443:path');
     } catch(e) {
       error = e;
     }
@@ -107,7 +105,7 @@ describe('didToUrl', function() {
     let result;
     let error;
     try {
-      result = didToUrl('did:web:bar.com%3A46443:path#zFoo');
+      result = didUrlToHttpsUrl('did:web:bar.com%3A46443:path#zFoo');
     } catch(e) {
       error = e;
     }
@@ -120,7 +118,7 @@ describe('didToUrl', function() {
     let result;
     let error;
     try {
-      result = didToUrl('did:web:bar.com%3A46443:path?service=bar');
+      result = didUrlToHttpsUrl('did:web:bar.com%3A46443:path?service=bar');
     } catch(e) {
       error = e;
     }
@@ -134,7 +132,8 @@ describe('didToUrl', function() {
     let result;
     let error;
     try {
-      result = didToUrl('did:web:bar.com%3A46443:path?service=bar#zFoo');
+      result = didUrlToHttpsUrl(
+        'did:web:bar.com%3A46443:path?service=bar#zFoo');
     } catch(e) {
       error = e;
     }
