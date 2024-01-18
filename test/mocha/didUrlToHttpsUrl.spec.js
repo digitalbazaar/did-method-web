@@ -8,7 +8,7 @@ const {expect} = chai;
 import {didUrlToHttpsUrl} from '../../lib/index.js';
 
 // tests for turning `did:web` DID URLs into HTTPS (well-known DID web) URLs
-describe('didUrlToWellKnownUrl', function() {
+describe('didUrlToHttpsUrl', function() {
   it('should throw if did is missing', function() {
     let result;
     let error;
@@ -73,6 +73,8 @@ describe('didUrlToWellKnownUrl', function() {
     expect(error).to.not.exist;
     expect(result).to.exist;
     expect(result).to.be.an('object');
+    expect(result.origin).to.equal('https://bar.com');
+    expect(result.baseUrl).to.equal('https://bar.com/.well-known/did.json');
     expect(result.fullUrl).to.equal('https://bar.com/.well-known/did.json');
   });
   it('should add path "/did.json" if paths on did', function() {
@@ -86,6 +88,8 @@ describe('didUrlToWellKnownUrl', function() {
     expect(error).to.not.exist;
     expect(result).to.exist;
     expect(result).to.be.an('object');
+    expect(result.origin).to.equal('https://bar.com');
+    expect(result.baseUrl).to.equal('https://bar.com/path/did.json');
     expect(result.fullUrl).to.equal('https://bar.com/path/did.json');
   });
   it('should decode port if included in did', function() {
@@ -99,6 +103,8 @@ describe('didUrlToWellKnownUrl', function() {
     expect(error).to.not.exist;
     expect(result).to.exist;
     expect(result).to.be.an('object');
+    expect(result.origin).to.equal('https://bar.com:46443');
+    expect(result.baseUrl).to.equal('https://bar.com:46443/path/did.json');
     expect(result.fullUrl).to.equal('https://bar.com:46443/path/did.json');
   });
   it('should include fragments from the did', function() {
@@ -112,6 +118,10 @@ describe('didUrlToWellKnownUrl', function() {
     expect(error).to.not.exist;
     expect(result).to.exist;
     expect(result).to.be.an('object');
+    expect(result.origin).to.equal('https://bar.com:46443');
+    expect(result.baseUrl).to.equal('https://bar.com:46443/path/did.json');
+    expect(result.urlWithoutFragment).to.equal(
+      'https://bar.com:46443/path/did.json');
     expect(result.fullUrl).to.equal('https://bar.com:46443/path/did.json#zFoo');
   });
   it('should include queries from the did', function() {
@@ -125,6 +135,8 @@ describe('didUrlToWellKnownUrl', function() {
     expect(error).to.not.exist;
     expect(result).to.exist;
     expect(result).to.be.an('object');
+    expect(result.origin).to.equal('https://bar.com:46443');
+    expect(result.baseUrl).to.equal('https://bar.com:46443/path/did.json');
     expect(result.fullUrl).to.equal(
       'https://bar.com:46443/path/did.json?service=bar');
   });
@@ -140,6 +152,10 @@ describe('didUrlToWellKnownUrl', function() {
     expect(error).to.not.exist;
     expect(result).to.exist;
     expect(result).to.be.an('object');
+    expect(result.origin).to.equal('https://bar.com:46443');
+    expect(result.baseUrl).to.equal('https://bar.com:46443/path/did.json');
+    expect(result.urlWithoutFragment).to.equal(
+      'https://bar.com:46443/path/did.json?service=bar');
     expect(result.fullUrl).to.equal(
       'https://bar.com:46443/path/did.json?service=bar#zFoo');
   });

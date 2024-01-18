@@ -8,7 +8,7 @@ const {expect} = chai;
 import {httpsUrlToDidUrl} from '../../lib/index.js';
 
 // tests for turning HTTPS (well-known DID web) urls into DID urls
-describe('urlToDid', function() {
+describe('httpsUrlToDidUrl', function() {
   it('should throw if url is missing', function() {
     let result;
     let error;
@@ -72,8 +72,9 @@ describe('urlToDid', function() {
     }
     expect(error).to.not.exist;
     expect(result).to.exist;
-    expect(result).to.be.a.string;
-    expect(result).to.equal('did:web:www.bar.org');
+    expect(result?.did).to.be.a.string;
+    expect(result?.did).to.equal('did:web:www.bar.org');
+    expect(result?.fullUrl).to.equal('did:web:www.bar.org');
   });
   it('should encode host port', function() {
     let result;
@@ -85,8 +86,9 @@ describe('urlToDid', function() {
     }
     expect(error).to.not.exist;
     expect(result).to.exist;
-    expect(result).to.be.a.string;
-    expect(result).to.equal('did:web:www.bar.org%3A46443');
+    expect(result?.did).to.be.a.string;
+    expect(result?.did).to.equal('did:web:www.bar.org%3A46443');
+    expect(result?.fullUrl).to.equal('did:web:www.bar.org%3A46443');
   });
   it('should ignore empty path on url', function() {
     let result;
@@ -98,8 +100,9 @@ describe('urlToDid', function() {
     }
     expect(error).to.not.exist;
     expect(result).to.exist;
-    expect(result).to.be.a.string;
-    expect(result).to.equal('did:web:www.bar.org%3A46443');
+    expect(result?.did).to.be.a.string;
+    expect(result?.did).to.equal('did:web:www.bar.org%3A46443');
+    expect(result?.fullUrl).to.equal('did:web:www.bar.org%3A46443');
   });
   it('should preserve url queries', function() {
     let result;
@@ -111,8 +114,9 @@ describe('urlToDid', function() {
     }
     expect(error).to.not.exist;
     expect(result).to.exist;
-    expect(result).to.be.a.string;
-    expect(result).to.equal('did:web:www.bar.org%3A46443?service=bar');
+    expect(result?.did).to.be.a.string;
+    expect(result?.did).to.equal('did:web:www.bar.org%3A46443');
+    expect(result?.fullUrl).to.equal('did:web:www.bar.org%3A46443?service=bar');
   });
   it('should preserve fragments', function() {
     let result;
@@ -124,8 +128,9 @@ describe('urlToDid', function() {
     }
     expect(error).to.not.exist;
     expect(result).to.exist;
-    expect(result).to.be.a.string;
-    expect(result).to.equal('did:web:www.bar.org%3A46443#someKey');
+    expect(result?.did).to.be.a.string;
+    expect(result?.did).to.equal('did:web:www.bar.org%3A46443');
+    expect(result?.fullUrl).to.equal('did:web:www.bar.org%3A46443#someKey');
   });
   it('should preserve url queries and fragments', function() {
     let result;
@@ -138,8 +143,10 @@ describe('urlToDid', function() {
     }
     expect(error).to.not.exist;
     expect(result).to.exist;
-    expect(result).to.be.a.string;
-    expect(result).to.equal('did:web:www.bar.org%3A46443?service=bar#someKey');
+    expect(result?.did).to.be.a.string;
+    expect(result?.did).to.equal('did:web:www.bar.org%3A46443');
+    expect(result?.fullUrl).to.equal(
+      'did:web:www.bar.org%3A46443?service=bar#someKey');
   });
   it('should encode paths in did format', function() {
     let result;
@@ -152,8 +159,9 @@ describe('urlToDid', function() {
     }
     expect(error).to.not.exist;
     expect(result).to.exist;
-    expect(result).to.be.a.string;
-    expect(result).to.equal(
+    expect(result?.did).to.be.a.string;
+    expect(result?.did).to.equal('did:web:www.bar.org%3A46443:foo');
+    expect(result?.fullUrl).to.equal(
       'did:web:www.bar.org%3A46443:foo?service=bar#someKey');
   });
   it('should URI encode paths in did', function() {
@@ -167,8 +175,9 @@ describe('urlToDid', function() {
     }
     expect(error).to.not.exist;
     expect(result).to.exist;
-    expect(result).to.be.a.string;
-    expect(result).to.equal(
+    expect(result?.did).to.be.a.string;
+    expect(result?.did).to.equal('did:web:www.bar.org%3A46443:foo%2Bsrv');
+    expect(result?.fullUrl).to.equal(
       'did:web:www.bar.org%3A46443:foo%2Bsrv?service=bar#someKey');
   });
   it('should drop "/.well-known/did.json" path', function() {
@@ -182,9 +191,9 @@ describe('urlToDid', function() {
     }
     expect(error).to.not.exist;
     expect(result).to.exist;
-    expect(result).to.be.a.string;
-    expect(result).to.equal(
-      'did:web:www.bar.org%3A46443');
+    expect(result?.did).to.be.a.string;
+    expect(result?.did).to.equal('did:web:www.bar.org%3A46443');
+    expect(result?.fullUrl).to.equal('did:web:www.bar.org%3A46443');
   });
   it('should drop "/did.json" path', function() {
     let result;
@@ -197,8 +206,8 @@ describe('urlToDid', function() {
     }
     expect(error).to.not.exist;
     expect(result).to.exist;
-    expect(result).to.be.a.string;
-    expect(result).to.equal(
-      'did:web:www.bar.org%3A46443:foo');
+    expect(result?.did).to.be.a.string;
+    expect(result?.did).to.equal('did:web:www.bar.org%3A46443:foo');
+    expect(result?.fullUrl).to.equal('did:web:www.bar.org%3A46443:foo');
   });
 });
