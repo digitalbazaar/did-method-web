@@ -25,7 +25,6 @@
   "dependencies": {
     "@digitalbazaar/did-io": "^2.0.0",
     "@digitalbazaar/did-method-key": "^5.2.0",
-    "@digitalbazaar/ed25519-verification-key-2020": "^4.0.0",
     "@digitalbazaar/http-client": "^4.0.0",
     "@digitalbazaar/x25519-key-agreement-key-2019": "^6.0.0",
     "@digitalbazaar/x25519-key-agreement-key-2020": "^3.0.0",
