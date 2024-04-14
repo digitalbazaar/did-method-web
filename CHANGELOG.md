@@ -1,6 +1,6 @@
 # @digitalbazaar/did-method-web ChangeLog
 
-## 1.0.1 - 2024-04-dd
+## 1.0.1 - 2024-04-14
 
 ### Fixed
 - Remove unused `verificationMethodSuite` parameter from driver constructor.
