@@ -94,7 +94,7 @@ That DID would correspond to the following Document:
 
 ## Install
 
-Requires Node.js 14+
+Requires Node.js 18+
 
 To install from `npm`:
 
@@ -112,17 +112,61 @@ npm install
 
 ## Usage
 
-### `generate()`
+### `fromKeyPair()`
 
-To generate a new key and get its corresponding `did:web` method DID Document:
+A new `did:web` DID Document can be generated from an existing key pair:
 
 ```js
 import {driver} from '@digitalbazaar/did-method-web';
-const didWebDriver = driver();
+import {Ed25519VerificationKey2020} from
+  '@digitalbazaar/ed25519-verification-key-2020';
+import {X25519KeyAgreementKey2020} from
+  '@digitalbazaar/x25519-key-agreement-key-2020';
 
-// generate did:web using Ed25519 key type by default
-const {didDocument, keyPairs, methodFor} = await didWebDriver.generate({
-  url: 'did:web:w3c-ccg.github.io:user:alice'
+// create a driver with the desired key support
+const didWebDriver = driver();
+didWebDriver.use({
+  multibaseMultikeyHeader: 'z6Mk',
+  fromMultibase: Ed25519VerificationKey2020.from
+});
+didWebDriver.use({
+  multibaseMultikeyHeader: 'z6LS',
+  fromMultibase: X25519KeyAgreementKey2020.from
+});
+
+/* similarly, ECDSA or BBS (Bls12381G2) can be used:
+import * as Bls12381Multikey from '@digitalbazaar/bls12-381-multikey';
+import * as EcdsaMultikey from '@digitalbazaar/ecdsa-multikey';
+
+didWebDriver.use({
+  multibaseMultikeyHeader: 'zDna',
+  fromMultibase: EcdsaMultikey.from
+});
+didWebDriver.use({
+  multibaseMultikeyHeader: 'zUC7',
+  fromMultibase: Bls12381Multikey.from
+});
+*/
+
+// generate did:web DID doc from an Ed25519 key pair and X25519 key pair
+const publicKeyMultibaseForVerificationKeyPair =
+  'z6MknCCLeeHBUaHu4aHSVLDCYQW9gjVJ7a63FpMvtuVMy53T';
+const keyPairForVerification = await Ed25519VerificationKey2020.from({
+  publicKeyMultibase: publicKeyMultibaseForVerificationKeyPair
+});
+const publicKeyMultibaseForKeyAgreementKeyPair =
+  'z6LSbysY2xFMRpGMhb7tFTLMpeuPRaqaWM1yECx2AtzE3KCc';
+const keyPairForKeyAgreement = await X25519KeyAgreementKey2020.from({
+  publicKeyMultibase: publicKeyMultibaseForKeyAgreementKeyPair
+});
+const {
+  didDocument, keyPairs, methodFor
+} = await didWebDriver.fromKeyPair({
+  // the desired `did:web` DID URL
+  url: 'did:web:w3c-ccg.github.io:user:alice',
+  // either one or both of these key pairs must be provided
+  verificationKeyPair: keyPairForVerification,
+  keyAgreementKeyPair: keyPairForKeyAgreement
 });
 
 // print the DID Document above
@@ -130,43 +174,39 @@ console.log(JSON.stringify(didDocument, null, 2));
 
 // keyPairs will be set like so ->
 Map(2) {
-  'did:web:w3c-ccg.github.io:user:alice#z6MkuBLrjSGt1PPADAvuv6rmvj4FfSAfffJotC6K8ZEorYmv' => Ed25519VerificationKey2020 {
-    id: 'did:web:w3c-ccg.github.io:user:alice#z6MkuBLrjSGt1PPADAvuv6rmvj4FfSAfffJotC6K8ZEorYmv',
+  'did:web:w3c-ccg.github.io:user:alice#z6Mkpw72M9suPCBv48X2Xj4YKZJH9W7wzEK1aS6JioKSo89C' => Ed25519VerificationKey2020 {
+    id: 'did:web:w3c-ccg.github.io:user:alice#z6Mkpw72M9suPCBv48X2Xj4YKZJH9W7wzEK1aS6JioKSo89C',
     controller: 'did:web:w3c-ccg.github.io:user:alice',
     type: 'Ed25519VerificationKey2020',
-    publicKeyMultibase: 'z6MkuBLrjSGt1PPADAvuv6rmvj4FfSAfffJotC6K8ZEorYmv',
-    privateKeyMultibase: 'z3zDo1wXuXGcFkJa9SPE7VYpdutmHq8gJsvFRMKJckTWMykoHsAjWNbHXqzrZ8qa7aWdDTjmJNJ1amYEG2mCvZZeY'
+    publicKeyMultibase: 'z6Mkpw72M9suPCBv48X2Xj4YKZJH9W7wzEK1aS6JioKSo89C'
   },
-  'did:web:w3c-ccg.github.io:user:alice#z6LSeRSE5Em5oJpwdk3NBaLVERBS332ULC7EQq5EtMsmXhsM' => X25519KeyAgreementKey2020 {
-    id: 'did:web:w3c-ccg.github.io:user:alice#z6LSeRSE5Em5oJpwdk3NBaLVERBS332ULC7EQq5EtMsmXhsM',
+  'did:web:w3c-ccg.github.io:user:alice#z6LSgxJr5q1pwHPbiK7u8Pw1GvnfMTZSMxkhaorQ1aJYWFz3' => X25519KeyAgreementKey2020 {
+    id: 'did:web:w3c-ccg.github.io:user:alice#z6LSgxJr5q1pwHPbiK7u8Pw1GvnfMTZSMxkhaorQ1aJYWFz3',
     controller: 'did:web:w3c-ccg.github.io:user:alice',
     type: 'X25519KeyAgreementKey2020',
-    publicKeyMultibase: 'z6LSeRSE5Em5oJpwdk3NBaLVERBS332ULC7EQq5EtMsmXhsM',
-    privateKeyMultibase: 'z3weeMD56C1T347EmB6kYNS7trpQwjvtQCpCYRpqGz6mcemT'
+    publicKeyMultibase: 'z6LSgxJr5q1pwHPbiK7u8Pw1GvnfMTZSMxkhaorQ1aJYWFz3'
   }
 }
 ```
 
-`methodFor` is a convenience function that returns a public/private key pair
+`methodFor` is a convenience function that returns a public key pair
 instance for a given purpose. For example, a verification key (containing a
-`signer()` and `verifier()` functions) are frequently useful for
+`verifier()` function) is frequently useful for
 [`jsonld-signatures`](https://github.com/digitalbazaar/jsonld-signatures) or
-[`vc-js`](https://github.com/digitalbazaar/vc-js) operations. After generating
-a new did:web DID, you can do:
+[`vc`](https://github.com/digitalbazaar/vc) operations. After generating
+a new `did:web` DID, you can do:
 
 ```js
-// For signing Verifiable Credentials
+// for verifying Verifiable Credentials
 const assertionKeyPair = methodFor({purpose: 'assertionMethod'});
-// For Authorization Capabilities (zCaps)
+// for verifying authorization Capabilities (zCaps)
 const invocationKeyPair = methodFor({purpose: 'capabilityInvocation'});
-// For Encryption using `@digitalbazaar/minimal-cipher`
+// for encryption to a recipient using `@digitalbazaar/minimal-cipher`
 const keyAgreementPair = methodFor({purpose: 'keyAgreement'});
 ```
 
-Note that `methodFor` returns a key pair that contains both a public and private
-key pair (since it has access to the `keyPairs` map from `generate()`).
-This makes it useful for _signing_ and _encrypting_ operations (unlike the
-`publicMethodFor` that's returned by `get()`, below).
+Note that `methodFor` returns a key pair that contains a public key pair.
+This makes it useful for _verifying_ and _encrypting_ operations.
 
 ### `get()`
 
@@ -180,12 +220,12 @@ const didDocument = await didWebDriver.get({did});
 ```
 
 (Results in the [example DID Doc](#example-did-document) above).
-### Backwards Compatibility with the 2018/2019 Crypto Suites
+### Backwards Compatibility with legacy key expressions
 
-By default, this `did:web` driver returns DID Documents that have the 2020
-crypto suites for verification and key agreement.
-If you need DID Documents that are using the 2018/2019 crypto suites,
-you can customize the driver as follows.
+A `did:web` driver can be configured to return whatever key expression is
+desirable, including legacy key expressions. For example, you can create a
+driver that will return an `Ed25519VerificationKey2018` formatted key when
+an `ed25519` key is detected:
 
 ```js
 import {
@@ -193,12 +233,14 @@ import {
 } from '@digitalbazaar/ed25519-verification-key-2018';
 import * as didWeb from '@digitalbazaar/did-method-web';
 
-const didWebDriver2018 = didWeb.driver({
- verificationSuite: Ed25519VerificationKey2018
+const didWebDriver2018 = didWeb.driver();
+didWebDriver2018.use({
+  multibaseMultikeyHeader: 'z6Mk',
+  fromMultibase: Ed25519VerificationKey2018.from
 });
 
 const did = 'did:web:w3c-ccg.github.io:user:alice:2018';
-await didWebDriver2018.get({did});
+await didWebDriver2018.get({url: did});
 // ->
 {
   '@context': [
@@ -232,21 +274,18 @@ To do this pass the parameter `allowList` to either `DidWebDriver` or the `drive
 import {DidWebDriver, driver} from '@digitalbazaar/did-method-web';
 
 const allowList = ['safe-domain.org', 'localhost:46443'];
-
 const restrictedDriver = new DidWebDriver({allowList});
-// this will throw
-const failedGenerate = await restrictedDriver.generate({url: 'https://unsafe-domain.net'});
-// this will succeed
-const succesfullGenerate = await restrictedDriver.generate({url: 'https://safe-domain.org'});
 
-// get is also restricted
-// this will fail
-const failedDidDocument = await restrictedDriver.get({did: 'did:web:unsafe-domain.net'});
-const succesfullDidDocument = await restrictedDriver.get({did: 'did:web:safe-domain.org'});
+// call `restrictedDriver.use()` with supported key types and then ...
 
-// same for driver
-const restrictedDriver2 = driver({allowList});
-// same tests here
+// this will always fail
+const failedGenerate = await restrictedDriver.get({
+  url: 'did:web:unsafe-domain.net'
+});
+// this can succeed
+const successfulGenerate = await restrictedDriver.get({
+  url: 'did:web:safe-domain.org'
+});
 ```
 
 ### fetchOptions
@@ -256,35 +295,33 @@ The following apis will accept a `fetchOptions` parameter: `DidWebDriver`, `driv
 
 ```js
 import {DidWebDriver, driver} from '@digitalbazaar/did-method-web';
-// accept really large didDocuments
+// accept really large DID documents
 const fetchOptions = {size: 81920000};
 const driver = new driver({fetchOptions});
 const fetchOptions2 = {redirect: 'follow'};
 const did = 'did:web:safe-domain.org';
-// this will combine the two fetchOptions with get's fetchOptions overriding the ones 
-// driver received
-const didDocument = await driver.get({did, fetchOptions: fetchOptions2})
-// this can also be done via new DidWebDriver({fetchOptions});
+// this will spread `fetchOptions2` over `fetchOptions`
+const didDocument = await driver.get({url: did, fetchOptions: fetchOptions2})
 ```
 
 ### Helper Functions
 
-In addition to the `did:web` driver, this package also exports several helper 
+In addition to the `did:web` driver, this package also exports several helper
 functions for working with `did:web` DIDs.
 
-To convert a `did:web` to its corresponding URL:
+To convert a `did:web` URL to its corresponding HTTPS URL:
 
 ```js
-import {didToUrl} from '@digitalbazaar/did-method-web';
-const did = 'did:web:w3c-ccg.github.io:user:alice';
-const didUrl = didToUrl(did);
+import {didUrlToHttpsUrl} from '@digitalbazaar/did-method-web';
+const didUrl = 'did:web:w3c-ccg.github.io:user:alice';
+const httpsUrl = didUrlToHttpsUrl(did);
 // https://w3c-ccg.github.io/user/alice/did.json
 ```
-To convert a URL to its corresponding `did:web` DID
+To convert an HTTPS URL to its corresponding `did:web` DID URL
 ```js
-import {urlToDid} from '@digitalbazaar/did-method-web';
-const url = 'https://w3c-ccg.github.io/user/alice/did.json'
-const did = urlToDid(url);
+import {httpsUrlToDidUrl} from '@digitalbazaar/did-method-web';
+const httpsUrl = 'https://w3c-ccg.github.io/user/alice/did.json'
+const didUrl = httpsUrlToDidUrl(url);
 // did:web:w3c-ccg.github.io:user:alice
 ```
 
