@@ -142,6 +142,11 @@ didWebDriver.use({
   multibaseMultikeyHeader: 'zDna',
   fromMultibase: EcdsaMultikey.from
 });
+// note: two possible multibase-multikey prefixes for Bls12381G2 multikeys
+didWebDriver.use({
+  multibaseMultikeyHeader: 'zUC6',
+  fromMultibase: Bls12381Multikey.from
+});
 didWebDriver.use({
   multibaseMultikeyHeader: 'zUC7',
   fromMultibase: Bls12381Multikey.from
